@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LifeStream - Choose Registration Role</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#eeeeee",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-on-surface": "#f0f1f1",
+                        "secondary": "#506169",
+                        "on-background": "#1a1c1c",
+                        "on-tertiary-container": "#fefcff",
+                        "on-secondary-container": "#55656d",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#0d1e25",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#93000d",
+                        "error-container": "#ffdad6",
+                        "outline": "#906f6c",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "primary-fixed": "#ffdad6",
+                        "surface-variant": "#e2e2e2",
+                        "surface-tint": "#bb171c",
+                        "surface-dim": "#dadada",
+                        "tertiary": "#005cab",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f9f9f9",
+                        "on-primary-container": "#fffbff",
+                        "secondary-fixed-dim": "#b8c9d3",
+                        "surface-container-high": "#e8e8e8",
+                        "primary-fixed-dim": "#ffb4ac",
+                        "tertiary-fixed-dim": "#a5c8ff",
+                        "surface-container-low": "#f3f3f3",
+                        "on-tertiary-fixed-variant": "#004786",
+                        "on-tertiary-fixed": "#001c3a",
+                        "tertiary-fixed": "#d4e3ff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#b7131a",
+                        "on-surface": "#1a1c1c",
+                        "tertiary-container": "#1775d1",
+                        "surface-bright": "#f9f9f9",
+                        "outline-variant": "#e4beb9",
+                        "on-surface-variant": "#5b403d",
+                        "on-primary-fixed": "#410002",
+                        "secondary-fixed": "#d4e5ef",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#d1e2ec",
+                        "inverse-primary": "#ffb4ac",
+                        "on-secondary-fixed-variant": "#394951",
+                        "primary-container": "#db322f",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f9f9f9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "md": "24px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "base": "8px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(55, 71, 79, 0.12);
+            border-color: #e4beb9;
+        }
+        .role-card {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(55, 71, 79, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-sans">
+
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-background flex justify-between items-center w-full px-md md:px-lg max-w-container-max mx-auto h-16 border-b border-outline-variant dark:border-outline">
+    <div class="flex items-center">
+        <a th:href="@{/}" class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">LifeStream</a>
+    </div>
+    <nav class="hidden md:flex gap-md h-full items-center">
+        <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-md text-label-md h-full flex items-center px-sm" th:href="@{/how-it-works}">How it Works</a>
+        <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-md text-label-md h-full flex items-center px-sm" th:href="@{/centers}">Find Center</a>
+        <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-md text-label-md h-full flex items-center px-sm" th:href="@{/impact}">Impact</a>
+    </nav>
+    <div class="flex items-center gap-sm">
+        <!-- Converted buttons to anchor tags for Spring Boot routing -->
+        <a th:href="@{/login}" class="font-label-md text-label-md text-primary dark:text-primary-fixed hover:bg-surface-container dark:hover:bg-surface-variant transition-all px-md py-sm rounded-DEFAULT inline-block">Sign In</a>
+        <a th:href="@{/register}" class="hidden md:inline-block font-label-md text-label-md bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all px-md py-sm rounded-DEFAULT">Register</a>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow flex items-center justify-center py-xl px-md md:px-lg w-full max-w-container-max mx-auto relative overflow-hidden">
+    <!-- Decorative background element -->
+    <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-surface-container-low to-transparent -z-10 rounded-bl-full opacity-50"></div>
+
+    <div class="w-full max-w-4xl flex flex-col items-center">
+        <div class="text-center mb-xl">
+            <span class="material-symbols-outlined text-primary mb-md text-4xl" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+            <h1 class="font-headline-lg text-headline-lg md:font-headline-lg text-on-surface mb-sm">Select Your Role</h1>
+            <p class="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">
+                Join the LifeStream network. Choose how you want to participate in the vital blood management ecosystem to proceed with registration.
+            </p>
+        </div>
+
+        <!-- Bento-style Card Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-md w-full">
+
+            <!-- Donor Card -->
+            <a class="role-card bg-surface-container-lowest border border-surface-container-highest rounded-xl p-lg flex flex-col items-center text-center group cursor-pointer relative overflow-hidden" th:href="@{/donor/login}">
+                <div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-md group-hover:bg-primary-container transition-colors duration-300">
+                    <span class="material-symbols-outlined text-primary text-3xl group-hover:text-on-primary-container transition-colors duration-300" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                </div>
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-sm group-hover:text-primary transition-colors duration-300">Donor</h2>
+                <p class="font-body-sm text-body-sm text-secondary flex-grow">
+                    Register to donate blood, track your donation history, and see the impact of your contributions.
+                </p>
+                <div class="mt-lg w-full border-t border-surface-container-highest pt-sm">
+                        <span class="font-label-md text-label-md text-primary flex items-center justify-center gap-xs">
+                            Continue as Donor
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                </div>
+            </a>
+
+            <!-- Hospital Card -->
+            <a class="role-card bg-surface-container-lowest border border-surface-container-highest rounded-xl p-lg flex flex-col items-center text-center group cursor-pointer relative overflow-hidden" th:href="@{/hospital/login}">
+                <div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-md group-hover:bg-primary-container transition-colors duration-300">
+                    <span class="material-symbols-outlined text-tertiary text-3xl group-hover:text-on-primary-container transition-colors duration-300" style="font-variation-settings: 'FILL' 1;">local_hospital</span>
+                </div>
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-sm group-hover:text-primary transition-colors duration-300">Hospital</h2>
+                <p class="font-body-sm text-body-sm text-secondary flex-grow">
+                    Access real-time inventory, place vital orders, and manage patient blood requirements securely.
+                </p>
+                <div class="mt-lg w-full border-t border-surface-container-highest pt-sm">
+                        <span class="font-label-md text-label-md text-tertiary flex items-center justify-center gap-xs">
+                            Continue as Hospital
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                </div>
+            </a>
+
+            <!-- Organization Card -->
+            <a class="role-card bg-surface-container-lowest border border-surface-container-highest rounded-xl p-lg flex flex-col items-center text-center group cursor-pointer relative overflow-hidden" th:href="@{/organization/login}">
+                <div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-md group-hover:bg-primary-container transition-colors duration-300">
+                    <span class="material-symbols-outlined text-secondary text-3xl group-hover:text-on-primary-container transition-colors duration-300" style="font-variation-settings: 'FILL' 1;">groups</span>
+                </div>
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-sm group-hover:text-primary transition-colors duration-300">Organization</h2>
+                <p class="font-body-sm text-body-sm text-secondary flex-grow">
+                    Coordinate blood drives, manage logistics, and oversee regional supply chain operations.
+                </p>
+                <div class="mt-lg w-full border-t border-surface-container-highest pt-sm">
+                        <span class="font-label-md text-label-md text-secondary flex items-center justify-center gap-xs">
+                            Continue as Org
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                </div>
+            </a>
+        </div>
+
+        <div class="mt-lg">
+            <!-- Converted button to anchor tag for routing back to home/cancel page -->
+            <a th:href="@{/}" class="inline-block font-label-md text-label-md text-secondary border border-secondary px-md py-sm rounded-DEFAULT hover:bg-surface-container-low transition-colors">
+                Return Home
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
