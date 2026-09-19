@@ -119,19 +119,79 @@
 <body class="bg-background text-on-surface min-h-screen flex flex-col font-sans">
 
 <!-- TopAppBar -->
-<header class="bg-surface dark:bg-on-background flex justify-between items-center w-full px-md md:px-lg max-w-container-max mx-auto h-16 border-b border-outline-variant dark:border-outline">
-    <div class="flex items-center">
-        <a th:href="@{/}" class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">LifeStream</a>
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
+    <div class="bg-primary text-on-primary">
+        <div class="max-w-7xl mx-auto px-gutter flex flex-col sm:flex-row flex-wrap items-center justify-between py-1.5 gap-2">
+            <div class="flex items-center justify-center sm:justify-start gap-space-md flex-wrap w-full sm:w-auto">
+                <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-base text-secondary-fixed">phone_in_talk</span>
+                    <span class="font-label-sm text-label-sm uppercase tracking-wider text-surface-container-high hidden sm:inline">National Blood Helpline:</span>
+                    <span class="font-label-md text-label-md font-bold tracking-tight text-surface-container-lowest">011 269 9931 - 4</span>
+                </div>
+                <!--                <div th:if="${not #lists.isEmpty(criticalGroups)}" class="flex items-center gap-2 bg-secondary px-2.5 py-0.5 rounded-full w-full sm:w-auto justify-center mt-1 sm:mt-0">-->
+                <!--                    <span class="w-2 h-2 rounded-full bg-surface-container-lowest animate-pulse shrink-0"></span>-->
+                <!--                    <span class="font-label-sm text-[10px] sm:text-label-sm font-bold text-on-secondary tracking-wide uppercase text-center">Emergency: <span th:each="g,it : ${criticalGroups}"><span th:text="${g}">O-</span><span th:if="${!it.last}">, </span></span> High Need</span>-->
+                <!--                </div>-->
+            </div>
+            <div class="flex items-center justify-center sm:justify-end gap-space-md w-full sm:w-auto mt-2 sm:mt-0">
+                <div class="flex items-center gap-1 text-surface-container-high font-label-sm text-label-sm">
+                    <span class="text-surface-container-lowest font-bold">EN</span><span class="opacity-40">/</span>
+                    <button class="hover:text-surface-container-lowest transition-colors">සිං</button><span class="opacity-40">/</span>
+                    <button class="hover:text-surface-container-lowest transition-colors">தமிழ்</button>
+                </div>
+<!--                <a th:href="@{/role}" class="w-8 h-8 rounded-full bg-primary hover:bg-secondary border border-on-primary/20 transition-colors flex items-center justify-center cursor-pointer shrink-0" title="Sign In">-->
+<!--                    <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>-->
+<!--                </a>-->
+            </div>
+        </div>
     </div>
-    <nav class="hidden md:flex gap-md h-full items-center">
-        <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-md text-label-md h-full flex items-center px-sm" th:href="@{/how-it-works}">How it Works</a>
-        <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-md text-label-md h-full flex items-center px-sm" th:href="@{/centers}">Find Center</a>
-        <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-md text-label-md h-full flex items-center px-sm" th:href="@{/impact}">Impact</a>
-    </nav>
-    <div class="flex items-center gap-sm">
-        <!-- Converted buttons to anchor tags for Spring Boot routing -->
-        <a th:href="@{/login}" class="font-label-md text-label-md text-primary dark:text-primary-fixed hover:bg-surface-container dark:hover:bg-surface-variant transition-all px-md py-sm rounded-DEFAULT inline-block">Sign In</a>
-        <a th:href="@{/register}" class="hidden md:inline-block font-label-md text-label-md bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all px-md py-sm rounded-DEFAULT">Register</a>
+
+    <!-- Main Nav -->
+    <div class="min-h-[5rem] max-w-7xl mx-auto px-gutter flex items-center justify-between gap-space-md py-2 relative">
+        <a class="flex items-center gap-3 shrink-0 text-left" data-path="home" th:href="@{/}">
+            <div class="w-11 h-11 rounded-xl bg-secondary flex items-center justify-center text-on-secondary shadow-md shrink-0">
+                <span class="material-symbols-outlined text-2xl">bloodtype</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-headline-sm text-headline-sm tracking-tight text-primary font-bold leading-none">LifeStream</span>
+                <span class="font-label-sm text-[10px] sm:text-label-sm text-on-surface-variant uppercase tracking-wider mt-0.5">National Blood Transfusion Service</span>
+            </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <nav class="hidden xl:flex items-center gap-1" data-active-classes="bg-primary-container text-on-primary-container font-bold rounded-lg">
+            <a aria-current="page" class="px-3 py-2 transition-colors uppercase tracking-wider bg-primary-container text-on-primary-container font-bold rounded-lg" data-path="home" th:href="@{/}">Home</a>
+            <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="services" href="#">Services</a>
+            <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="events-news" href="#">Events</a>
+            <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="for-donors" href="#">For Donors</a>
+            <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="contact-us" href="#">Contact Us</a>
+        </nav>
+
+        <div class="flex items-center gap-2 sm:gap-space-sm">
+            <a class="hidden md:flex px-5 py-2.5 rounded-lg bg-secondary hover:bg-secondary-container text-on-secondary hover:text-on-secondary-container font-label-lg text-label-lg font-bold shadow-md transition-all uppercase tracking-wider items-center gap-2" data-path="blood-donation-booking" th:href="@{/donor/register}">
+                <span class="material-symbols-outlined text-lg">favorite</span>
+                <span>Donate Blood Today</span>
+            </a>
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="xl:hidden p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary flex items-center justify-center transition-colors">
+                <span id="menu-icon" class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden xl:hidden flex-col bg-surface border-t border-outline-variant shadow-lg absolute w-full left-0 top-full max-h-[70vh] overflow-y-auto px-gutter py-4 gap-4">
+        <nav class="flex flex-col gap-2">
+            <a class="px-4 py-3 bg-primary-container text-on-primary-container font-label-md text-label-md font-bold rounded-lg uppercase tracking-wider" th:href="@{/}">About Us</a>
+            <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Services</a>
+            <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Events &amp; News</a>
+            <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Publications</a>
+            <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">For Donors</a>
+            <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Contact Us</a>
+            <a class="md:hidden mt-2 px-4 py-3 bg-secondary text-on-secondary text-center font-label-md text-label-md font-bold rounded-lg uppercase tracking-wider shadow-sm flex justify-center items-center gap-2" th:href="@{/donor/register}">
+                <span class="material-symbols-outlined text-lg">favorite</span> Donate Blood Today
+            </a>
+        </nav>
     </div>
 </header>
 
