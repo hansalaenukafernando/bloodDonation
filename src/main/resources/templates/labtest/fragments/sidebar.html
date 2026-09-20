@@ -5,7 +5,61 @@
 <!-- ========================================== -->
 <!-- LAB DESKTOP SIDEBAR FRAGMENT               -->
 <!-- ========================================== -->
-<aside th:fragment="desktop-sidebar" class="hidden md:flex flex-col p-6 bg-white border-r border-gray-100 w-64 min-w-[260px] z-10 h-[calc(100vh-73px)] sticky top-[73px]">
+<th:block th:fragment="desktop-sidebar">
+
+<!-- ===== Responsive sidebar: slide-in drawer below 768px, normal sidebar from 768px up ===== -->
+<style>
+  .app-sidebar {
+    position: fixed; top: var(--hdr-h, 73px); bottom: 0; left: 0; z-index: 60;
+    width: 18rem; max-width: 85vw; overflow-y: auto; overscroll-behavior: contain;
+    transform: translateX(-100%); visibility: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1), visibility 0s linear .3s;
+  }
+  .app-sidebar.is-open {
+    transform: translateX(0); visibility: visible;
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1), visibility 0s;
+  }
+  .sidebar-overlay {
+    position: fixed; top: var(--hdr-h, 73px); right: 0; bottom: 0; left: 0; z-index: 55;
+    background: rgba(17, 24, 39, 0.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none; transition: opacity .3s ease;
+  }
+  .sidebar-overlay.is-open { opacity: 1; pointer-events: auto; }
+
+  /* Menu (hamburger) button that JS puts at the left of the top bar */
+  .sidebar-toggle {
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+    width: 40px; height: 40px; margin-left: -6px; padding: 0; border: 0; border-radius: 10px;
+    background: transparent; color: #374151; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: background-color .15s ease, transform .1s ease;
+  }
+  .sidebar-toggle:hover { background: #f3f4f6; }
+  .sidebar-toggle:active { transform: scale(.94); }
+  .sidebar-toggle:focus-visible { outline: 2px solid #b7131a; outline-offset: 2px; }
+  .sidebar-toggle .material-symbols-outlined { font-size: 26px; }
+  header .sidebar-head { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+  header .sidebar-brand { min-width: 0; }
+  @media (max-width: 479px) { header .sidebar-brand { font-size: 1rem; line-height: 1.25rem; } }
+
+  /* While the drawer is open: lock page scroll */
+  body.sidebar-open { overflow: hidden; }
+
+  /* Desktop: back to the normal sticky sidebar, no button, no overlay */
+  @media (min-width: 768px) {
+    .app-sidebar {
+      position: sticky; top: 73px; bottom: auto; left: auto; max-width: none;
+      z-index: 10; width: 16rem; min-width: 260px; height: calc(100vh - 73px);
+      transform: none; visibility: visible; box-shadow: none; transition: none;
+    }
+    .sidebar-overlay, .sidebar-toggle { display: none; }
+  }
+</style>
+
+<!-- Dark backdrop behind the drawer (small screens only) -->
+<div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+<aside id="appSidebar" class="app-sidebar flex flex-col p-6 bg-white border-r border-gray-100" aria-label="Main navigation">
 
   <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Lab Navigation</p>
 
@@ -46,38 +100,82 @@
   </nav>
 </aside>
 
+<script>
+  // Turns the sidebar into a slide-in drawer on small screens, opened by a menu button in the top bar.
+  (function () {
+    var BP = 768;   // keep equal to the @media (min-width) above
+    var sidebar = document.getElementById('appSidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var header  = document.querySelector('body > header') || document.querySelector('header');
+    if (!sidebar || !overlay || !header || document.getElementById('sidebarToggle')) return;
 
-<!-- ========================================== -->
-<!-- LAB MOBILE BOTTOM NAVIGATION               -->
-<!-- ========================================== -->
-<nav th:fragment="mobile-nav" class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 flex justify-around items-center py-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
+    // 1) Menu button, placed at the left of the top bar
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'sidebarToggle';
+    btn.className = 'sidebar-toggle';
+    btn.setAttribute('aria-label', 'Open menu');
+    btn.setAttribute('aria-controls', 'appSidebar');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">menu</span>';
+    var icon = btn.firstChild;
 
-  <a th:href="@{/labtest/dashboard}" data-nav="/labtest/dashboard" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
-    <span class="material-symbols-outlined text-[24px]">dashboard</span>
-    <span class="text-[10px]">Home</span>
-  </a>
+    var row = header.firstElementChild;              // the flex row: brand ... profile
+    var brand = row && row.firstElementChild;
+    if (brand) {
+      var head = document.createElement('div');
+      head.className = 'sidebar-head';
+      brand.classList.add('sidebar-brand');
+      row.insertBefore(head, brand);
+      head.appendChild(btn);
+      head.appendChild(brand);
+    } else {
+      header.insertBefore(btn, header.firstChild);
+    }
 
-  <a th:href="@{/labtest/pending}" data-nav="/labtest/pending" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
-    <span class="material-symbols-outlined text-[24px]">biotech</span>
-    <span class="text-[10px]">Pending</span>
-  </a>
+    // 2) Keep the drawer exactly below the top bar (its height can change on small screens)
+    function measure() {
+      document.documentElement.style.setProperty('--hdr-h', header.offsetHeight + 'px');
+    }
+    measure();
+    window.addEventListener('load', measure);
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(header);
 
-  <a th:href="@{/labtest/history}" data-nav="/labtest/history" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
-    <span class="material-symbols-outlined text-[24px]">history</span>
-    <span class="text-[10px]">History</span>
-  </a>
+    // 3) Open / close
+    function isOpen() { return sidebar.classList.contains('is-open'); }
+    function setOpen(open) {
+      sidebar.classList.toggle('is-open', open);
+      overlay.classList.toggle('is-open', open);
+      document.body.classList.toggle('sidebar-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      icon.textContent = open ? 'close' : 'menu';
+      if (open) {
+        measure();
+        // focus the first link once the slide-in animation has finished (browsers ignore focus() mid-animation)
+        setTimeout(function () {
+          var first = sidebar.querySelector('a[href]');
+          if (isOpen() && first) first.focus({ preventScroll: true });
+        }, 320);
+      }
+    }
 
-  <a th:href="@{/labtest/profile}" data-nav="/labtest/profile" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
-    <span class="material-symbols-outlined text-[24px]">person</span>
-    <span class="text-[10px]">Profile</span>
-  </a>
+    btn.addEventListener('click', function () { setOpen(!isOpen()); });
+    overlay.addEventListener('click', function () { setOpen(false); });
+    sidebar.addEventListener('click', function (e) {
+      if (e.target.closest('a[href], button')) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen()) { setOpen(false); btn.focus(); }
+    });
+    window.addEventListener('resize', function () {
+      measure();
+      if (window.innerWidth >= BP && isOpen()) setOpen(false);
+    });
+  })();
+</script>
 
-  <!-- Mobile Logout -->
-  <a th:href="@{/labtest/logout}" class="flex flex-col items-center gap-1 text-gray-500 font-medium hover:text-red-600 transition-colors p-2 group">
-    <span class="material-symbols-outlined text-[24px] group-hover:text-red-600">logout</span>
-    <span class="text-[10px]">Logout</span>
-  </a>
-</nav>
+</th:block>
 
 <!-- ========================================== -->
 <!-- Active tab highlighter — must be explicitly -->
@@ -105,10 +203,6 @@
         highlight('.labtest-nav-link',
             ['bg-red-50', 'text-red-700', 'font-semibold'],
             ['text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900']);
-
-        highlight('.labtest-nav-link-mobile',
-            ['text-primary'],
-            ['text-gray-500']);
     })();
 </script>
 
