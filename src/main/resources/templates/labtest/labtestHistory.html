@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Test History | LifeStream Clinical</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        "primary": "#b7131a",
+                        "background": "#f9fafb",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }
+
+        /* Premium Shadow and Borders */
+        .card-elevation {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #F3F4F6;
+        }
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+    </style>
+</head>
+<body class="bg-background text-gray-900 overflow-x-hidden relative antialiased selection:bg-red-100 selection:text-primary">
+
+<!-- Top Navigation Bar -->
+<header class="bg-white sticky top-0 z-40 border-b border-gray-100">
+    <div class="flex justify-between items-center px-6 py-4 w-full">
+        <div class="text-xl font-bold text-primary flex items-center gap-2 tracking-tight">
+            <span class="material-symbols-outlined text-[26px] text-primary icon-filled">biotech</span>
+            LifeStream <span class="font-medium text-gray-800">Lab</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex flex-col text-right hidden sm:block">
+                <span class="text-sm font-semibold text-gray-900 block leading-tight" th:text="${'Tech. ' + tester.name}">Marcus V.</span>
+                <span class="text-xs text-gray-500 font-medium tracking-wide">Lab Station</span>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-red-50 text-primary flex items-center justify-center font-bold border border-red-100 shadow-sm ring-2 ring-white"
+                 th:text="${#strings.substring(tester.name,0,2)}">LT</div>
+        </div>
+    </div>
+</header>
+
+<div class="flex w-full min-h-[calc(100vh-73px)] relative z-0">
+
+    <!-- Sidebar -->
+    <aside th:replace="~{labtest/fragments/sidebar :: desktop-sidebar}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
+
+        <!-- Page Header -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-5">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Tested Blood History</h1>
+                <p class="text-gray-500 text-sm mt-1">Archive of processed lab results and safety clearances.</p>
+            </div>
+        </header>
+
+        <!-- Table Section Header & Search -->
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-5">
+            <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary icon-filled">fact_check</span>
+                Processed Records Log
+            </h2>
+            <div class="flex gap-3 w-full md:w-auto">
+                <div class="relative w-full md:w-80">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+                    <input type="text" oninput="filterTable(this, 'labHistoryTableBody')" placeholder="Search by bag ID, group, status..." class="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm shadow-sm transition-all text-gray-700">
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Container -->
+        <section class="card-elevation bg-white rounded-2xl overflow-hidden mb-6">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead class="bg-gray-50/50 text-xs uppercase text-gray-500 border-b border-gray-100">
+                    <tr>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Bag ID</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Date Processed</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Confirmed Type</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Clearance Status</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Screening Results (HIV / Hep / Syp)</th>
+                    </tr>
+                    </thead>
+                    <tbody id="labHistoryTableBody" class="divide-y divide-gray-100 text-sm">
+                    <tr th:each="bag : ${historyBags}" class="hover:bg-gray-50/50 transition-colors group" th:classappend="${bag.status == 'Discarded'} ? 'bg-red-50/30' : ''">
+
+                        <td class="px-6 py-4 font-mono font-medium text-gray-500" th:text="${'BAG-' + bag.bagId + '-A'}">BAG-001</td>
+
+                        <td class="px-6 py-4 text-gray-700 font-medium" th:text="${bag.testedDate != null ? bag.testedDate : bag.collectionDate}">Oct 24, 2026</td>
+
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-primary font-bold text-xs ring-1 ring-red-100" th:text="${bag.bloodGroup}">O+</span>
+                        </td>
+
+                        <td class="px-6 py-4">
+                            <!-- Premium Status Badges -->
+                            <span th:if="${bag.status == 'Available'}" class="px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Cleared for Transfusion
+              </span>
+                            <span th:if="${bag.status == 'Discarded'}" class="px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide inline-flex items-center gap-1.5 bg-red-50 text-red-700 ring-1 ring-red-600/20">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                  Biohazard / Discard
+              </span>
+                        </td>
+
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded" th:classappend="${bag.hivResult == 'Negative'} ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'" th:text="'HIV: ' + ${bag.hivResult}">HIV: Neg</span>
+                                <span class="text-gray-300">|</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded" th:classappend="${bag.hepatitisResult == 'Negative'} ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'" th:text="'Hep: ' + ${bag.hepatitisResult}">Hep: Neg</span>
+                                <span class="text-gray-300">|</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded" th:classappend="${bag.syphilisResult == 'Negative'} ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'" th:text="'Syp: ' + ${bag.syphilisResult}">Syp: Neg</span>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <!-- Empty State -->
+                    <tr th:if="${#lists.isEmpty(historyBags)}">
+                        <td colspan="5" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">history_toggle_off</span>
+                                <p class="font-medium text-gray-900">No tested blood history records found</p>
+                                <p class="text-xs mt-1">Processed lab results will appear here.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Mobile Nav -->
+<nav th:replace="~{labtest/fragments/sidebar :: mobile-nav}"></nav>
+<div th:replace="~{labtest/fragments/sidebar :: nav-active-script}"></div>
+
+<script>
+    // Simple client-side row search/filter
+    function filterTable(input, tbodyId) {
+        const filter = input.value.toLowerCase();
+        const rows = document.getElementById(tbodyId).getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            // Skip empty state row if it exists
+            if(rows[i].querySelector('td[colspan]')) continue;
+
+            const text = rows[i].textContent.toLowerCase();
+            rows[i].style.display = text.includes(filter) ? '' : 'none';
+        }
+    }
+</script>
+</body>
+</html>

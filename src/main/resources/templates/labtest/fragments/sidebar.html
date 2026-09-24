@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ========================================== -->
+<!-- LAB DESKTOP SIDEBAR FRAGMENT               -->
+<!-- ========================================== -->
+<aside th:fragment="desktop-sidebar" class="hidden md:flex flex-col p-6 bg-white border-r border-gray-100 w-64 min-w-[260px] z-10 h-[calc(100vh-73px)] sticky top-[73px]">
+
+  <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Lab Navigation</p>
+
+  <nav class="flex flex-col gap-2 flex-1">
+
+    <!-- Dashboard -->
+    <a th:href="@{/labtest/dashboard}" data-nav="/labtest/dashboard" class="labtest-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+      <span class="material-symbols-outlined text-[22px]">dashboard</span>
+      <span class="text-sm">Dashboard</span>
+    </a>
+
+    <!-- Pending Tests -->
+    <a th:href="@{/labtest/pending}" data-nav="/labtest/pending" class="labtest-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+      <span class="material-symbols-outlined text-[22px]">biotech</span>
+      <span class="text-sm">Pending Tests</span>
+    </a>
+
+    <!-- Test History -->
+    <a th:href="@{/labtest/history}" data-nav="/labtest/history" class="labtest-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+      <span class="material-symbols-outlined text-[22px]">history</span>
+      <span class="text-sm">Test History</span>
+    </a>
+
+    <!-- Profile -->
+    <a th:href="@{/labtest/profile}" data-nav="/labtest/profile" class="labtest-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+      <span class="material-symbols-outlined text-[22px]">person</span>
+      <span class="text-sm">My Profile</span>
+    </a>
+
+    <!-- Bottom Section: Sign Out -->
+    <div class="mt-auto pt-6">
+      <div class="h-px bg-gray-100 my-2 mx-2"></div>
+      <a th:href="@{/labtest/logout}" class="flex items-center gap-3 text-gray-600 font-medium px-4 py-3 hover:bg-red-50 hover:text-red-700 rounded-xl transition-all duration-200 group">
+        <span class="material-symbols-outlined text-[22px] group-hover:text-red-600 transition-colors">logout</span>
+        <span class="text-sm">Sign Out</span>
+      </a>
+    </div>
+  </nav>
+</aside>
+
+
+<!-- ========================================== -->
+<!-- LAB MOBILE BOTTOM NAVIGATION               -->
+<!-- ========================================== -->
+<nav th:fragment="mobile-nav" class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 flex justify-around items-center py-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
+
+  <a th:href="@{/labtest/dashboard}" data-nav="/labtest/dashboard" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
+    <span class="material-symbols-outlined text-[24px]">dashboard</span>
+    <span class="text-[10px]">Home</span>
+  </a>
+
+  <a th:href="@{/labtest/pending}" data-nav="/labtest/pending" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
+    <span class="material-symbols-outlined text-[24px]">biotech</span>
+    <span class="text-[10px]">Pending</span>
+  </a>
+
+  <a th:href="@{/labtest/history}" data-nav="/labtest/history" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
+    <span class="material-symbols-outlined text-[24px]">history</span>
+    <span class="text-[10px]">History</span>
+  </a>
+
+  <a th:href="@{/labtest/profile}" data-nav="/labtest/profile" class="labtest-nav-link-mobile flex flex-col items-center gap-1 p-2 transition-colors text-gray-500 font-medium hover:text-primary">
+    <span class="material-symbols-outlined text-[24px]">person</span>
+    <span class="text-[10px]">Profile</span>
+  </a>
+
+  <!-- Mobile Logout -->
+  <a th:href="@{/labtest/logout}" class="flex flex-col items-center gap-1 text-gray-500 font-medium hover:text-red-600 transition-colors p-2 group">
+    <span class="material-symbols-outlined text-[24px] group-hover:text-red-600">logout</span>
+    <span class="text-[10px]">Logout</span>
+  </a>
+</nav>
+
+<!-- ========================================== -->
+<!-- Active tab highlighter — must be explicitly -->
+<!-- included on every page via th:replace.      -->
+<!-- ========================================== -->
+<script th:fragment="nav-active-script">
+    (function () {
+        const path = window.location.pathname;
+
+        function highlight(selector, activeOnClasses, activeOffClasses) {
+            let best = null;
+            document.querySelectorAll(selector).forEach(function (link) {
+                const target = link.getAttribute('data-nav');
+                if (target && (path === target || path.startsWith(target + '/'))) {
+                    if (!best || target.length > best.getAttribute('data-nav').length) best = link;
+                }
+            });
+            document.querySelectorAll(selector).forEach(function (link) {
+                const isActive = link === best;
+                activeOnClasses.forEach(c => link.classList.toggle(c, isActive));
+                activeOffClasses.forEach(c => link.classList.toggle(c, !isActive));
+            });
+        }
+
+        highlight('.labtest-nav-link',
+            ['bg-red-50', 'text-red-700', 'font-semibold'],
+            ['text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900']);
+
+        highlight('.labtest-nav-link-mobile',
+            ['text-primary'],
+            ['text-gray-500']);
+    })();
+</script>
+
+</body>
+</html>
