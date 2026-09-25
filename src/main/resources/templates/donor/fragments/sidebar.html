@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ========================================== -->
+<!-- DESKTOP SIDEBAR FRAGMENT — Clinical light  -->
+<!-- ========================================== -->
+<aside th:fragment="desktop-sidebar" class="hidden md:flex flex-col p-6 bg-white border-r border-gray-100 w-64 min-w-[260px] z-10 h-[calc(100vh-73px)] sticky top-[73px]">
+
+    <!-- Sidebar Header / Logo area -->
+    <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 bg-red-50 border border-red-100 rounded-xl flex items-center justify-center text-primary shadow-sm">
+            <span class="material-symbols-outlined icon-filled">water_drop</span>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold text-gray-900 tracking-tight">LifeStream</h2>
+            <p class="text-xs font-medium text-gray-500">Donor Portal</p>
+        </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex flex-col gap-2 flex-1" id="donor-desktop-nav">
+        <a th:href="@{/donor/dashboard}" data-nav="/donor/dashboard"
+           class="donor-nav-link flex items-center gap-3 text-gray-600 px-4 py-3 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200">
+            <span class="material-symbols-outlined text-[22px]">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+        </a>
+        <a th:href="@{/donor/requests}" data-nav="/donor/requests"
+           class="donor-nav-link flex items-center gap-3 text-gray-600 px-4 py-3 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200">
+            <span class="material-symbols-outlined text-[22px]">calendar_add_on</span>
+            <span class="text-sm font-medium">Schedule Donation</span>
+        </a>
+        <a th:href="@{/donor/history}" data-nav="/donor/history"
+           class="donor-nav-link flex items-center gap-3 text-gray-600 px-4 py-3 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200">
+            <span class="material-symbols-outlined text-[22px]">history</span>
+            <span class="text-sm font-medium">Donation History</span>
+        </a>
+        <a th:href="@{/donor/profile}" data-nav="/donor/profile"
+           class="donor-nav-link flex items-center gap-3 text-gray-600 px-4 py-3 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200">
+            <span class="material-symbols-outlined text-[22px]">person</span>
+            <span class="text-sm font-medium">My Profile</span>
+        </a>
+
+        <!-- Divider -->
+        <div class="h-px bg-gray-100 my-2 mx-2"></div>
+
+        <!-- Logout Button -->
+        <a th:href="@{/donor/login}" class="flex items-center gap-3 text-gray-600 px-4 py-3 hover:bg-red-50 hover:text-red-700 rounded-xl transition-all duration-200 group">
+            <span class="material-symbols-outlined text-[22px] group-hover:text-red-600 transition-colors">logout</span>
+            <span class="text-sm font-medium">Log Out</span>
+        </a>
+    </nav>
+</aside>
+
+<!-- ========================================== -->
+<!-- MOBILE BOTTOM NAVIGATION — Clinical light  -->
+<!-- ========================================== -->
+<nav th:fragment="mobile-nav" class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 flex justify-around items-center py-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50" id="donor-mobile-nav">
+    <a th:href="@{/donor/dashboard}" data-nav="/donor/dashboard" class="donor-nav-link-mobile flex flex-col items-center gap-1 text-gray-500 hover:text-primary transition-colors p-2">
+        <span class="material-symbols-outlined text-[24px]">dashboard</span>
+        <span class="text-[10px] font-medium">Home</span>
+    </a>
+    <a th:href="@{/donor/requests}" data-nav="/donor/requests" class="donor-nav-link-mobile flex flex-col items-center gap-1 text-gray-500 hover:text-primary transition-colors p-2">
+        <span class="material-symbols-outlined text-[24px]">calendar_add_on</span>
+        <span class="text-[10px] font-medium">Schedule</span>
+    </a>
+    <a th:href="@{/donor/history}" data-nav="/donor/history" class="donor-nav-link-mobile flex flex-col items-center gap-1 text-gray-500 hover:text-primary transition-colors p-2">
+        <span class="material-symbols-outlined text-[24px]">history</span>
+        <span class="text-[10px] font-medium">History</span>
+    </a>
+    <a th:href="@{/donor/profile}" data-nav="/donor/profile" class="donor-nav-link-mobile flex flex-col items-center gap-1 text-gray-500 hover:text-primary transition-colors p-2">
+        <span class="material-symbols-outlined text-[24px]">person</span>
+        <span class="text-[10px] font-medium">Profile</span>
+    </a>
+</nav>
+
+<!-- ========================================== -->
+<!-- Active tab highlighter — must be explicitly -->
+<!-- included on every page via th:replace since -->
+<!-- th:replace only pulls in the matched        -->
+<!-- fragment element, not sibling tags.          -->
+<!-- ========================================== -->
+<script th:fragment="nav-active-script">
+    (function () {
+        const path = window.location.pathname;
+
+        function highlight(selector, activeOnClasses, activeOffClasses) {
+            let best = null;
+            document.querySelectorAll(selector).forEach(function (link) {
+                const target = link.getAttribute('data-nav');
+                if (target && (path === target || path.startsWith(target + '/'))) {
+                    if (!best || target.length > best.getAttribute('data-nav').length) best = link;
+                }
+            });
+            document.querySelectorAll(selector).forEach(function (link) {
+                const isActive = link === best;
+                activeOnClasses.forEach(c => link.classList.toggle(c, isActive));
+                activeOffClasses.forEach(c => link.classList.toggle(c, !isActive));
+
+                const icon = link.querySelector('.material-symbols-outlined');
+                if (icon) icon.classList.toggle('icon-filled', isActive);
+            });
+        }
+
+        highlight('.donor-nav-link',
+            ['bg-red-50', 'text-primary', 'font-semibold'],
+            ['text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900']);
+
+        highlight('.donor-nav-link-mobile',
+            ['text-primary'],
+            ['text-gray-500']);
+    })();
+</script>
+
+</body>
+</html>

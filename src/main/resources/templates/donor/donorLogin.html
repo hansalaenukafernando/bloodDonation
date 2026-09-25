@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LifeStream - Sign In</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#eeeeee",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-on-surface": "#f0f1f1",
+                        "secondary": "#506169",
+                        "on-background": "#1a1c1c",
+                        "on-tertiary-container": "#fefcff",
+                        "on-secondary-container": "#55656d",
+                        "error": "#ba1a1a",
+                        "outline": "#906f6c",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "tertiary": "#005cab",
+                        "surface": "#f9f9f9",
+                        "primary": "#b7131a",
+                        "on-surface": "#1a1c1c",
+                        "background": "#f9f9f9"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast-slide-in {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased relative">
+
+<!-- Toast Notification Container (Top Right) -->
+<div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2">
+    <!-- Success Toast -->
+    <div th:if="${successMessage}" class="toast-message toast-slide-in bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-center justify-between w-96" role="alert">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-green-600">check_circle</span>
+            <span th:text="${successMessage}" class="text-sm font-medium"></span>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-green-700 hover:text-green-900 font-bold ml-4">&times;</button>
+    </div>
+
+    <!-- Error / Deactivated Toast -->
+    <div th:if="${errorMessage}" class="toast-message toast-slide-in bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-center justify-between w-96" role="alert">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-red-600">error</span>
+            <span th:text="${errorMessage}" class="text-sm font-medium"></span>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-900 font-bold ml-4">&times;</button>
+    </div>
+</div>
+
+<main class="w-full flex flex-col md:flex-row h-screen">
+    <!-- Left Side: Image / Branding -->
+    <div class="hidden md:flex md:w-1/2 bg-surface-container-high relative overflow-hidden items-end justify-start p-10">
+        <div class="absolute inset-0 bg-cover bg-center opacity-80 mix-blend-multiply" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_9KLmspjEvlhjUGatef4Ah77PcIftKSGT7ZLkgzMn8fIqDbaeYBne-rhn715-BhZnfiUZlq8Aykh38rBd24YLCT-65TT1iY2OPE6Cq4BNaK9ITVHRLdQ5pfAOClnHvh98zFvo3S7_CBwxsFj_B6eptcvJLuH1f0Q8DK-zdYBOGtFwZbUkrU0pZ51ukVhJT6vlzsbkXbZeMlqOfgQheUOAltsYSeBM0hLIC6oio64cYfJcOz46JJL7_inMTJqzzrpZXWqtEpZ59dE')"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-on-background/80 via-transparent to-transparent"></div>
+        <div class="relative z-10 w-full text-left flex flex-col gap-3">
+            <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">bloodtype</span>
+                <h1 class="text-2xl font-bold text-on-primary">LifeStream</h1>
+            </div>
+            <p class="text-lg text-surface-container-highest max-w-md">Empowering life-saving connections through precision blood management and donor care.</p>
+        </div>
+    </div>
+
+    <!-- Right Side: Login Form -->
+    <div class="w-full md:w-1/2 flex items-center justify-center p-6 md:p-10 bg-surface relative">
+        <div class="w-full max-w-md space-y-8">
+            <div class="flex md:hidden items-center justify-center gap-1 mb-6">
+                <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">bloodtype</span>
+                <h1 class="text-2xl font-bold text-primary">LifeStream</h1>
+            </div>
+
+            <div class="text-center space-y-1">
+                <h2 class="text-2xl font-bold text-on-surface">Welcome Back</h2>
+                <p class="text-sm text-secondary">Secure access to the LifeStream portal.</p>
+            </div>
+
+            <form class="space-y-4" th:action="@{/donor/login}" method="POST">
+                <div class="space-y-3">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-semibold text-on-surface" for="email">Email Address</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-lg">mail</span>
+                            <input class="w-full pl-10 pr-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary transition-colors" id="email" name="email" placeholder="Enter your email" type="email" required/>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-semibold text-on-surface" for="password">Password</label>
+                            <a class="text-xs text-tertiary hover:underline" href="#">Forgot Password?</a>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-lg">lock</span>
+                            <input class="w-full pl-10 pr-10 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary transition-colors" id="password" name="password" placeholder="••••••••" type="password" required/>
+                            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface transition-colors" type="button" onclick="togglePassword()">
+                                <span class="material-symbols-outlined text-lg" id="toggleIcon">visibility_off</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="w-full bg-primary hover:bg-primary-container text-on-primary font-bold py-3 rounded-lg shadow-sm hover:shadow transition-all duration-200 text-sm" type="submit">
+                    Sign In
+                </button>
+            </form>
+
+            <p class="text-center text-sm text-secondary">
+                Don't have an account? <a class="text-primary font-bold hover:underline" th:href="@{/donor/register}">Register for a new account</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Toast Notification Auto-Dismiss (5 Seconds)
+    document.addEventListener('DOMContentLoaded', function() {
+        const toasts = document.querySelectorAll('.toast-message');
+        toasts.forEach(toast => {
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+        });
+    });
+
+    // Toggle Password Visibility
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.innerText = 'visibility';
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.innerText = 'visibility_off';
+        }
+    }
+</script>
+
+</body>
+</html>
