@@ -20,10 +20,18 @@ public class AdminCoolBoxService {
         return coolBoxRepository.findAll();
     }
 
-    public void addCoolBox(String boxCode, String currentTemp) {
+    public void addCoolBox(String boxCode, String currentTemp) throws Exception {
+        // box_code is unique in the DB, so check it here and give a friendly message
+        boolean exists = coolBoxRepository.findByBoxCodeContainingIgnoreCase(boxCode)
+                .stream()
+                .anyMatch(b -> b.getBoxCode().equalsIgnoreCase(boxCode));
+        if (exists) {
+            throw new Exception("A cool box with this code already exists!");
+        }
+
         CoolBox box = new CoolBox();
         box.setBoxCode(boxCode);
-        box.setCurrentTemp(currentTemp != null && !currentTemp.isEmpty() ? currentTemp : "4.0°C");
+        box.setCurrentTemp(currentTemp != null && !currentTemp.trim().isEmpty() ? currentTemp.trim() : "4.0°C");
         box.setStatus("Active");
         coolBoxRepository.save(box);
     }
@@ -31,8 +39,17 @@ public class AdminCoolBoxService {
     public void updateCoolBox(Integer boxId, String boxCode, String currentTemp) throws Exception {
         CoolBox box = coolBoxRepository.findById(boxId)
                 .orElseThrow(() -> new Exception("Cool box not found"));
+
+        // the same code must not already belong to another box
+        boolean takenByAnother = coolBoxRepository.findByBoxCodeContainingIgnoreCase(boxCode)
+                .stream()
+                .anyMatch(b -> b.getBoxCode().equalsIgnoreCase(boxCode) && !b.getBoxId().equals(boxId));
+        if (takenByAnother) {
+            throw new Exception("A cool box with this code already exists!");
+        }
+
         box.setBoxCode(boxCode);
-        box.setCurrentTemp(currentTemp);
+        box.setCurrentTemp(currentTemp != null && !currentTemp.trim().isEmpty() ? currentTemp.trim() : "4.0°C");
         coolBoxRepository.save(box);
     }
 

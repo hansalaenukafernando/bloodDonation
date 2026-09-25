@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin Dashboard | LifeStream</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        "primary": "#b7131a",
+                        "background": "#f9fafb",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }
+
+        /* Premium Shadow and Borders */
+        .card-elevation {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #F3F4F6;
+        }
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+    </style>
+</head>
+<body class="bg-background text-gray-900 overflow-x-hidden relative antialiased selection:bg-red-100 selection:text-primary">
+
+<!-- Top Navigation Bar -->
+<header class="bg-white sticky top-0 z-40 border-b border-gray-100">
+    <div class="flex justify-between items-center px-6 py-4 w-full">
+        <div class="text-xl font-bold text-primary flex items-center gap-2 tracking-tight">
+            <span class="material-symbols-outlined text-[26px] text-primary icon-filled">admin_panel_settings</span>
+            LifeStream <span class="font-medium text-gray-800">Admin <span class="text-gray-300 font-light ml-2 mr-2">|</span> System Console</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex flex-col text-right hidden sm:block">
+                <span class="text-sm font-semibold text-gray-900 block leading-tight">Administrator</span>
+                <span class="text-xs text-gray-500 font-medium tracking-wide">System Management</span>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-red-50 text-primary flex items-center justify-center font-bold border border-red-100 shadow-sm ring-2 ring-white">AD</div>
+        </div>
+    </div>
+</header>
+
+<div class="flex w-full min-h-[calc(100vh-73px)] relative z-0">
+
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/fragments/sidebar :: desktop-sidebar}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
+
+        <!-- Page Header -->
+        <header class="mb-8 border-b border-gray-200 pb-5">
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">System Dashboard</h1>
+            <p class="text-gray-500 text-sm mt-1">Global overview of network health, users, and logistics.</p>
+        </header>
+
+        <!-- Dynamic Statistics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+
+            <!-- Total Donors -->
+            <div class="card-elevation bg-white p-6 rounded-2xl flex items-center gap-5 transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+                <div class="w-1.5 h-full bg-blue-500 absolute left-0 top-0"></div>
+                <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-2xl ring-1 ring-blue-100/50">
+                    <span class="material-symbols-outlined icon-filled">groups</span>
+                </div>
+                <div>
+                    <p class="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1">Total Donors</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none" th:text="${totalDonors}">0</h3>
+                </div>
+            </div>
+
+            <!-- Registered Hospitals -->
+            <div class="card-elevation bg-white p-6 rounded-2xl flex items-center gap-5 transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+                <div class="w-1.5 h-full bg-purple-500 absolute left-0 top-0"></div>
+                <div class="w-14 h-14 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-2xl ring-1 ring-purple-100/50">
+                    <span class="material-symbols-outlined icon-filled">local_hospital</span>
+                </div>
+                <div>
+                    <p class="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1 leading-tight">Registered<br/>Hospitals</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none" th:text="${totalHospitals}">0</h3>
+                </div>
+            </div>
+
+            <!-- Active Deliveries -->
+            <div class="card-elevation bg-white p-6 rounded-2xl flex items-center gap-5 transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+                <div class="w-1.5 h-full bg-emerald-500 absolute left-0 top-0"></div>
+                <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-2xl ring-1 ring-emerald-100/50">
+                    <span class="material-symbols-outlined icon-filled">local_shipping</span>
+                </div>
+                <div>
+                    <p class="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1">Active Deliveries</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none" th:text="${activeDeliveries}">0</h3>
+                </div>
+            </div>
+
+            <!-- Pending Lab Tests -->
+            <div class="card-elevation bg-white p-6 rounded-2xl flex items-center gap-5 transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+                <div class="w-1.5 h-full bg-amber-500 absolute left-0 top-0"></div>
+                <div class="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-2xl ring-1 ring-amber-100/50">
+                    <span class="material-symbols-outlined icon-filled">biotech</span>
+                </div>
+                <div>
+                    <p class="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1">Pending Lab Tests</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none" th:text="${pendingTests}">0</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Lower Dashboard Grids -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+            <!-- System Alerts -->
+            <section class="card-elevation bg-white rounded-2xl p-6 lg:p-8">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+                        <span class="material-symbols-outlined text-red-500 icon-filled text-[20px]">warning</span> System Alerts
+                    </h3>
+                </div>
+
+                <ul class="space-y-3">
+                    <li th:each="alert : ${systemAlerts}" class="p-4 bg-red-50/50 border border-red-100 rounded-xl text-sm font-medium text-red-800 flex items-start gap-3">
+                        <span class="material-symbols-outlined text-[18px] text-red-500 mt-0.5">error</span>
+                        <span th:text="${alert}">Alert text</span>
+                    </li>
+
+                    <!-- Empty state -->
+                    <li th:if="${#lists.isEmpty(systemAlerts)}" class="p-6 bg-gray-50/50 border border-gray-100 rounded-xl text-center text-gray-500 flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[32px] text-emerald-500 mb-2">check_circle</span>
+                        <span class="text-sm font-bold text-gray-900">All systems operational</span>
+                        <span class="text-xs mt-1">No active alerts — inventory and expiry status look healthy.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Pending Approvals -->
+            <section class="card-elevation bg-white rounded-2xl p-6 lg:p-8">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+                        <span class="material-symbols-outlined text-primary icon-filled text-[20px]">pending_actions</span> Pending Approvals
+                    </h3>
+                </div>
+
+                <div class="space-y-3">
+                    <div th:each="camp : ${pendingApprovals}" class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 border border-gray-100 rounded-xl hover:border-gray-300 hover:bg-gray-50/50 transition-colors group">
+                        <div>
+                            <p class="font-bold text-gray-900 text-sm mb-1" th:text="${camp.campName}">Camp Name</p>
+                            <p class="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px]">corporate_fare</span>
+                                <span th:text="${camp.organization != null ? camp.organization.orgName : 'Unknown Organization'} + ' • Blood Camp Request'">New Facility Registration</span>
+                            </p>
+                        </div>
+                        <a th:href="@{/admin/camp-requests}" class="w-full sm:w-auto bg-white border border-gray-200 text-gray-700 hover:bg-red-50 hover:border-red-200 hover:text-primary px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 whitespace-nowrap group-hover:shadow-md">
+                            Review <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </a>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div th:if="${#lists.isEmpty(pendingApprovals)}" class="p-6 bg-gray-50/50 border border-gray-100 rounded-xl text-center text-gray-500 flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[32px] text-gray-400 mb-2">task_alt</span>
+                        <span class="text-sm font-bold text-gray-900">You're all caught up!</span>
+                        <span class="text-xs mt-1">No pending approvals right now.</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

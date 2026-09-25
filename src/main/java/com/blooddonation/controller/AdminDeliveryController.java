@@ -1,5 +1,6 @@
 package com.blooddonation.controller;
 
+import com.blooddonation.util.Validate;
 import com.blooddonation.entity.BloodRequest;
 import com.blooddonation.service.HospitalBloodRequestService;
 import jakarta.servlet.http.HttpSession;
@@ -56,6 +57,16 @@ public class AdminDeliveryController {
                                 RedirectAttributes ra) {
         if (session.getAttribute("admin") == null) {
             return "redirect:/admin/login";
+        }
+
+        String error = Validate.first(
+                Validate.required("Driver", driverId),
+                Validate.required("Cool box", coolBoxId),
+                Validate.bloodGroup("Blood group", bloodGroupUsed)
+        );
+        if (error != null) {
+            ra.addFlashAttribute("errorMessage", error);
+            return "redirect:/admin/deliveries";
         }
 
         try {

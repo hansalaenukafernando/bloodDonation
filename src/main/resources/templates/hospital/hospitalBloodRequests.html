@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Blood Requests | LifeStream Clinical</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#f3f3f3",
+            "primary-fixed": "#ffdad6",
+            "surface": "#f9f9f9",
+            "on-tertiary-fixed": "#001c3a",
+            "tertiary-container": "#1775d1",
+            "surface-container-high": "#e8e8e8",
+            "secondary-fixed-dim": "#b8c9d3",
+            "surface-container": "#eeeeee",
+            "surface-variant": "#e2e2e2",
+            "primary-container": "#db322f",
+            "on-secondary-fixed-variant": "#394951",
+            "primary-fixed-dim": "#ffb4ac",
+            "surface-bright": "#f9f9f9",
+            "primary": "#b7131a",
+            "on-surface": "#1a1c1c",
+            "on-tertiary-container": "#fefcff",
+            "background": "#f9f9f9",
+            "secondary-fixed": "#d4e5ef",
+            "on-tertiary-fixed-variant": "#004786",
+            "secondary": "#506169",
+            "on-secondary-container": "#55656d",
+            "on-secondary": "#ffffff",
+            "outline": "#906f6c",
+            "inverse-on-surface": "#f0f1f1",
+            "surface-dim": "#dadada",
+            "on-primary-container": "#fffbff",
+            "inverse-surface": "#2f3131",
+            "on-secondary-fixed": "#0d1e25",
+            "on-surface-variant": "#5b403d",
+            "on-error": "#ffffff",
+            "surface-tint": "#bb171c",
+            "on-primary-fixed": "#410002",
+            "error": "#ba1a1a",
+            "secondary-container": "#d1e2ec",
+            "on-primary-fixed-variant": "#93000d",
+            "tertiary": "#005cab",
+            "tertiary-fixed-dim": "#a5c8ff",
+            "on-background": "#1a1c1c",
+            "tertiary-fixed": "#d4e3ff",
+            "outline-variant": "#e4beb9",
+            "on-primary": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "inverse-primary": "#ffb4ac",
+            "surface-container-highest": "#e2e2e2"
+          },
+          "spacing": {
+            "xl": "64px",
+            "sm": "12px",
+            "xs": "4px",
+            "base": "8px",
+            "md": "24px",
+            "lg": "40px",
+            "container-max": "1280px",
+            "gutter": "24px"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #FAFAFA; }
+    .card-elevation { box-shadow: 0 2px 4px rgba(55, 71, 79, 0.05); border: 1px solid #E0E0E0; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .modal-enter { opacity: 0; transform: scale(0.95); transition: opacity 0.2s ease-out, transform 0.2s ease-out; }
+    .modal-enter-active { opacity: 1; transform: scale(1); }
+    .input-field { width: 100%; border: 1px solid #e4beb9; border-radius: 0.5rem; padding: 0.5rem 0.75rem; background-color: #ffffff; outline: none; font-size: 14px; }
+    .input-field:focus { border-color: #005cab; box-shadow: 0 0 0 1px #005cab; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .toast-slide-in { animation: slideIn 0.3s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface overflow-x-hidden relative">
+
+<!-- Toast Notifications -->
+<div id="toast-container" class="fixed top-5 right-5 z-[200] flex flex-col gap-2">
+  <div th:if="${successMessage}" class="toast-message toast-slide-in bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-center justify-between w-80">
+    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-green-600">check_circle</span><span th:text="${successMessage}" class="text-sm font-medium"></span></div>
+    <button onclick="this.parentElement.remove()" class="text-green-700 font-bold ml-4">&times;</button>
+  </div>
+  <div th:if="${errorMessage}" class="toast-message toast-slide-in bg-red-100 border-l-4 border-red-600 text-red-800 p-4 rounded shadow-lg flex items-center justify-between w-80">
+    <div class="flex items-center gap-3"><span class="material-symbols-outlined text-red-600">error</span><span th:text="${errorMessage}" class="text-sm font-medium"></span></div>
+    <button onclick="this.parentElement.remove()" class="text-red-800 font-bold ml-4">&times;</button>
+  </div>
+</div>
+
+<!-- Top Navigation Bar -->
+<header class="bg-white sticky top-0 z-40 border-b border-gray-100">
+  <div class="flex justify-between items-center px-6 py-4 w-full">
+    <div class="text-xl font-bold text-primary flex items-center gap-2 tracking-tight">
+      <span class="material-symbols-outlined text-[26px] text-primary icon-filled">local_hospital</span>
+      LifeStream <span class="font-medium text-gray-800">Clinical </span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex flex-col text-right hidden sm:block">
+        <span class="text-sm font-semibold text-gray-900 block leading-tight" th:text="${hospital.name}">Hospital Name</span>
+        <span class="text-xs text-gray-500 font-medium tracking-wide" th:text="${'HOSP-' + hospital.hospitalId}">HOSP-ID</span>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-red-50 text-primary flex items-center justify-center font-bold border border-red-100 shadow-sm ring-2 ring-white" th:text="${#strings.substring(hospital.name, 0, 2)}">HS</div>
+    </div>
+  </div>
+</header>
+
+<div class="flex w-full min-h-[calc(100vh-64px)] relative z-0">
+
+  <!-- INJECT HOSPITAL DESKTOP SIDEBAR -->
+  <aside th:replace="~{hospital/fragments/sidebar :: desktop-sidebar}"></aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 p-6 overflow-y-auto">
+
+    <!-- Page Header -->
+    <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-outline-variant pb-4">
+      <div>
+        <h1 class="text-3xl font-bold text-on-surface">Blood Requests</h1>
+        <p class="text-secondary text-sm">Manage active requests and order new inventory from the central blood bank.</p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="openModal()" class="bg-error text-white font-bold py-2 px-5 rounded-lg hover:bg-red-700 transition-all shadow-md active:scale-95 flex items-center gap-2 justify-center whitespace-nowrap text-sm">
+          <span class="material-symbols-outlined">add_circle</span>
+          New Blood Request
+        </button>
+      </div>
+    </header>
+
+    <!-- Requests Table -->
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
+      <h2 class="text-xl font-bold text-on-surface flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">pending_actions</span>
+        Submitted Requests History
+      </h2>
+      <div class="relative w-full md:w-72">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
+        <input type="text" oninput="filterTable(this, 'hospitalRequestsTableBody')" placeholder="Search by patient, group, ward..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-outline-variant bg-white focus:outline-none focus:border-primary text-sm">
+      </div>
+    </div>
+
+    <div class="card-elevation bg-white rounded-xl overflow-hidden">
+      <table class="w-full text-left whitespace-nowrap">
+        <thead class="bg-surface-container-low text-xs uppercase text-secondary">
+        <tr>
+          <th class="p-4">Req ID</th>
+          <th class="p-4">Patient Details</th>
+          <th class="p-4">Priority</th>
+          <th class="p-4">Blood Group</th>
+          <th class="p-4 text-center">Quantity</th>
+          <th class="p-4">Ward</th>
+          <th class="p-4">Status</th>
+          <th class="p-4 text-center">Actions & Delivery Confirmation</th>
+        </tr>
+        </thead>
+        <tbody id="hospitalRequestsTableBody" class="divide-y divide-outline-variant text-sm">
+        <tr th:each="req : ${requests}">
+          <td class="p-4 font-mono font-bold text-secondary" th:text="${'REQ-' + req.requestId}">REQ-01</td>
+          <td class="p-4">
+            <span class="font-bold block" th:text="${req.patientName}">Patient Name</span>
+            <span class="text-xs text-secondary" th:text="${req.patientAge + ' yrs, ' + req.patientGender}">25 yrs, Male</span>
+          </td>
+          <td class="p-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                    th:classappend="${req.priority == 'stat'} ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-blue-100 text-blue-700'"
+                    th:text="${req.priority == 'stat' ? 'STAT / Urgent' : 'Standard'}">Standard</span>
+          </td>
+          <td class="p-4 font-bold text-primary" th:text="${req.bloodGroup}">O-</td>
+          <td class="p-4 text-center font-bold" th:text="${req.quantity + ' Units'}">2 Units</td>
+          <td class="p-4 text-secondary" th:text="${req.ward}">ICU</td>
+          <td class="p-4">
+            <span class="px-2.5 py-1 rounded text-xs font-bold uppercase"
+                  th:classappend="${req.status == 'Pending'} ? 'bg-yellow-100 text-yellow-800' : (${req.status == 'Approved'} ? 'bg-blue-100 text-blue-800' : (${req.status == 'Delivering'} ? 'bg-purple-100 text-purple-800 animate-pulse' : 'bg-green-100 text-green-800'))"
+                  th:text="${req.status}">Pending</span>
+          </td>
+          <td class="p-4 text-center">
+            <!-- Delivering තත්ත්වයේ ඇති විට පමණක් හොස්පිටල් එකට ලැබුණු බව තහවුරු කිරීමට (Mark as Delivered) බටන් එක පෙන්වයි -->
+            <div th:if="${req.status == 'Delivering'}">
+              <form th:action="@{/hospital/requests/mark-delivered/{id}(id=${req.requestId})}" method="POST">
+                <button type="submit" class="bg-green-600 text-white hover:bg-green-700 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all flex items-center gap-1 mx-auto">
+                  <span class="material-symbols-outlined text-sm">inventory</span> Mark as Delivered
+                </button>
+              </form>
+            </div>
+            <div th:if="${req.status == 'Delivered'}">
+              <span class="text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded border border-green-200">Received Successfully</span>
+            </div>
+            <!-- Request එක තාම "Pending" විදිහට තියෙද්දී විතරයි Edit/Delete පෙන්නන්නේ -->
+            <div th:if="${req.status == 'Pending'}" class="flex items-center justify-center gap-2">
+              <button type="button"
+                      th:attr="onclick=|openEditModal(${req.requestId}, '${req.priority}', '${req.bloodGroup}', ${req.quantity}, '${req.ward}', '${#strings.escapeJavaScript(req.patientName)}', ${req.patientAge}, '${req.patientGender}', '${req.patientIdNumber != null ? #strings.escapeJavaScript(req.patientIdNumber) : ''}', '${req.clinicalNotes != null ? #strings.escapeJavaScript(req.clinicalNotes) : ''}')|"
+                      class="bg-tertiary text-white hover:bg-blue-800 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all inline-flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">edit</span> Edit
+              </button>
+              <form th:action="@{/hospital/requests/delete}" method="POST" data-confirm="This blood request will be permanently deleted. This action cannot be undone." data-confirm-title="Delete blood request?" data-confirm-btn="Yes, Delete" data-confirm-icon="delete" class="inline">
+                <input type="hidden" name="requestId" th:value="${req.requestId}">
+                <button type="submit" class="bg-red-600 text-white hover:bg-red-700 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all inline-flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm">delete</span> Delete
+                </button>
+              </form>
+            </div>
+            <div th:if="${req.status != 'Delivering' and req.status != 'Delivered' and req.status != 'Pending'}">
+              <span class="text-xs text-gray-400 italic">No action required</span>
+            </div>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(requests)}">
+          <td colspan="8" class="p-8 text-center text-gray-500">No blood requests submitted yet.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<div th:replace="~{hospital/fragments/sidebar :: nav-active-script}"></div>
+
+<!-- ========================================== -->
+<!-- NEW BLOOD REQUEST MODAL POP-UP             -->
+<!-- ========================================== -->
+<div id="requestModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity cursor-pointer" onclick="closeModal()"></div>
+
+  <div class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden modal-enter flex flex-col max-h-[90vh]">
+
+    <!-- Modal Header -->
+    <div id="modalHeader" class="bg-gray-50 border-b border-outline-variant p-4 flex justify-between items-center sticky top-0 z-10 transition-colors duration-300">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-primary-container rounded-full flex items-center justify-center text-primary font-bold">
+          <span class="material-symbols-outlined">bloodtype</span>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-on-surface">Order Blood Products</h2>
+          <p class="text-xs text-secondary">Request inventory from the central blood bank.</p>
+        </div>
+      </div>
+      <button onclick="closeModal()" class="text-gray-500 hover:text-black font-bold text-xl">&times;</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 overflow-y-auto space-y-4">
+      <form id="bloodRequestForm" method="POST" th:action="@{/hospital/requests/add}" class="space-y-4">
+
+        <!-- Section: Priority -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">1. Priority Level</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <label class="relative flex items-center gap-3 cursor-pointer rounded-lg border bg-white p-3 border-outline-variant hover:border-primary transition-colors">
+              <input type="radio" id="radioStandard" name="priority" value="standard" class="w-4 h-4 text-primary focus:ring-primary" checked onchange="toggleUrgencyUI()">
+              <span class="flex flex-col">
+                <span class="block text-sm font-bold text-on-surface">Standard Restock</span>
+                <span class="block text-xs text-secondary mt-0.5">Routine inventory fulfillment (1-4 hours).</span>
+              </span>
+            </label>
+
+            <label class="relative flex items-center gap-3 cursor-pointer rounded-lg border bg-red-50 p-3 border-red-200 hover:border-red-500 transition-colors">
+              <input type="radio" id="radioStat" name="priority" value="stat" class="w-4 h-4 text-red-600 focus:ring-red-500" onchange="toggleUrgencyUI()">
+              <span class="flex flex-col">
+                <span class="block text-sm font-bold text-red-600 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">emergency</span> STAT / Urgent
+                </span>
+                <span class="block text-xs text-secondary mt-0.5">Immediate dispatch for critical patients.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section: Patient Details -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">2. Patient Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Patient Full Name</label>
+              <input type="text" class="input-field" placeholder="e.g. John Doe" name="patientName"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Patient ID / BHT No</label>
+              <input type="text" class="input-field" placeholder="e.g. BHT-44921" name="patientIdNumber"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Age</label>
+              <input type="number" min="0" max="120" class="input-field" placeholder="e.g. 45" name="patientAge"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Gender</label>
+              <select class="input-field" name="patientGender">
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Product Specifications -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">3. Product Specifications</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Blood Group</label>
+              <select class="input-field font-bold" name="bloodGroup">
+                <option value="" disabled selected>Select...</option>
+                <option value="O-">O Negative</option>
+                <option value="O+">O Positive</option>
+                <option value="A-">A Negative</option>
+                <option value="A+">A Positive</option>
+                <option value="B-">B Negative</option>
+                <option value="B+">B Positive</option>
+                <option value="AB-">AB Negative</option>
+                <option value="AB+">AB Positive</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Quantity (Units)</label>
+              <input type="number" min="1" max="50" class="input-field font-bold" name="quantity" value="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Delivery Details & Notes -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">4. Delivery & Clinical Notes</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Requesting Ward / Department</label>
+              <select class="input-field" name="ward">
+                <option value="Emergency Room / Trauma" selected>Emergency Room / Trauma</option>
+                <option value="Surgical Suite">Surgical Suite</option>
+                <option value="ICU">ICU</option>
+                <option value="Maternity Ward">Maternity Ward</option>
+                <option value="General Ward">General Ward</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-semibold text-secondary mb-1">Diagnosis / Special Clinical Notes</label>
+              <textarea class="input-field min-h-[60px]" placeholder="e.g. Post-partum hemorrhage, Irradiated blood..." name="notes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t">
+          <button type="button" onclick="closeModal()" class="px-5 py-2 rounded-lg border border-outline-variant text-secondary font-bold hover:bg-gray-100 text-sm">Cancel</button>
+          <button type="submit" id="submitRequestBtn" class="px-5 py-2 rounded-lg bg-primary text-white font-bold hover:bg-red-700 shadow-md text-sm">Submit Request</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- EDIT BLOOD REQUEST MODAL POP-UP (Pending only) -->
+<!-- ========================================== -->
+<div id="editRequestModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity cursor-pointer" onclick="closeEditModal()"></div>
+
+  <div class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden modal-enter flex flex-col max-h-[90vh]" id="editModalContent">
+
+    <!-- Modal Header -->
+    <div class="bg-gray-50 border-b border-outline-variant p-4 flex justify-between items-center sticky top-0 z-10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-primary-container rounded-full flex items-center justify-center text-primary font-bold">
+          <span class="material-symbols-outlined">edit</span>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-on-surface">Edit Blood Request</h2>
+          <p class="text-xs text-secondary">Only Pending requests can be edited.</p>
+        </div>
+      </div>
+      <button onclick="closeEditModal()" class="text-gray-500 hover:text-black font-bold text-xl">&times;</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 overflow-y-auto space-y-4">
+      <form id="editBloodRequestForm" method="POST" th:action="@{/hospital/requests/update}" class="space-y-4">
+
+        <input type="hidden" name="requestId" id="editRequestId">
+
+        <!-- Section: Priority -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">1. Priority Level</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <label class="relative flex items-center gap-3 cursor-pointer rounded-lg border bg-white p-3 border-outline-variant hover:border-primary transition-colors">
+              <input type="radio" id="editRadioStandard" name="priority" value="standard" class="w-4 h-4 text-primary focus:ring-primary">
+              <span class="flex flex-col">
+                <span class="block text-sm font-bold text-on-surface">Standard Restock</span>
+                <span class="block text-xs text-secondary mt-0.5">Routine inventory fulfillment (1-4 hours).</span>
+              </span>
+            </label>
+
+            <label class="relative flex items-center gap-3 cursor-pointer rounded-lg border bg-red-50 p-3 border-red-200 hover:border-red-500 transition-colors">
+              <input type="radio" id="editRadioStat" name="priority" value="stat" class="w-4 h-4 text-red-600 focus:ring-red-500">
+              <span class="flex flex-col">
+                <span class="block text-sm font-bold text-red-600 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">emergency</span> STAT / Urgent
+                </span>
+                <span class="block text-xs text-secondary mt-0.5">Immediate dispatch for critical patients.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section: Patient Details -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">2. Patient Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Patient Full Name</label>
+              <input type="text" class="input-field" placeholder="e.g. John Doe" name="patientName" id="editPatientName"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Patient ID / BHT No</label>
+              <input type="text" class="input-field" placeholder="e.g. BHT-44921" name="patientIdNumber" id="editPatientIdNumber"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Age</label>
+              <input type="number" min="0" max="120" class="input-field" placeholder="e.g. 45" name="patientAge" id="editPatientAge"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Gender</label>
+              <select class="input-field" name="patientGender" id="editPatientGender">
+                <option value="" disabled>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Product Specifications -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">3. Product Specifications</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Blood Group</label>
+              <select class="input-field font-bold" name="bloodGroup" id="editBloodGroup">
+                <option value="" disabled>Select...</option>
+                <option value="O-">O Negative</option>
+                <option value="O+">O Positive</option>
+                <option value="A-">A Negative</option>
+                <option value="A+">A Positive</option>
+                <option value="B-">B Negative</option>
+                <option value="B+">B Positive</option>
+                <option value="AB-">AB Negative</option>
+                <option value="AB+">AB Positive</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Quantity (Units)</label>
+              <input type="number" min="1" max="50" class="input-field font-bold" name="quantity" id="editQuantity">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Delivery Details & Notes -->
+        <div>
+          <h3 class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">4. Delivery & Clinical Notes</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-secondary mb-1">Requesting Ward / Department</label>
+              <select class="input-field" name="ward" id="editWard">
+                <option value="Emergency Room / Trauma">Emergency Room / Trauma</option>
+                <option value="Surgical Suite">Surgical Suite</option>
+                <option value="ICU">ICU</option>
+                <option value="Maternity Ward">Maternity Ward</option>
+                <option value="General Ward">General Ward</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-semibold text-secondary mb-1">Diagnosis / Special Clinical Notes</label>
+              <textarea class="input-field min-h-[60px]" placeholder="e.g. Post-partum hemorrhage, Irradiated blood..." name="notes" id="editNotes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t">
+          <button type="button" onclick="closeEditModal()" class="px-5 py-2 rounded-lg border border-outline-variant text-secondary font-bold hover:bg-gray-100 text-sm">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-white font-bold hover:bg-red-700 shadow-md text-sm">Save Changes</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  // Simple client-side row search/filter — matches typed text against any cell in the row.
+  function filterTable(input, tbodyId) {
+    const filter = input.value.toLowerCase();
+    const rows = document.getElementById(tbodyId).getElementsByTagName('tr');
+    for (let i = 0; i < rows.length; i++) {
+      const text = rows[i].textContent.toLowerCase();
+      rows[i].style.display = text.includes(filter) ? '' : 'none';
+    }
+  }
+
+  const modal = document.getElementById('requestModal');
+  const modalContent = modal.querySelector('.modal-enter');
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    setTimeout(() => modalContent.classList.add('modal-enter-active'), 10);
+  }
+
+  function closeModal() {
+    modalContent.classList.remove('modal-enter-active');
+    setTimeout(() => modal.classList.add('hidden'), 200);
+  }
+
+  // ---- Edit Modal (Pending requests only) ----
+  const editModal = document.getElementById('editRequestModal');
+  const editModalContent = document.getElementById('editModalContent');
+
+  function openEditModal(requestId, priority, bloodGroup, quantity, ward, patientName, patientAge, patientGender, patientIdNumber, notes) {
+    document.getElementById('editRequestId').value = requestId;
+    document.getElementById('editPatientName').value = patientName;
+    document.getElementById('editPatientIdNumber').value = patientIdNumber;
+    document.getElementById('editPatientAge').value = patientAge;
+    document.getElementById('editPatientGender').value = patientGender;
+    document.getElementById('editBloodGroup').value = bloodGroup;
+    document.getElementById('editQuantity').value = quantity;
+    document.getElementById('editWard').value = ward;
+    document.getElementById('editNotes').value = notes;
+
+    if (priority === 'stat') {
+      document.getElementById('editRadioStat').checked = true;
+    } else {
+      document.getElementById('editRadioStandard').checked = true;
+    }
+
+    editModal.classList.remove('hidden');
+    setTimeout(() => editModalContent.classList.add('modal-enter-active'), 10);
+  }
+
+  function closeEditModal() {
+    editModalContent.classList.remove('modal-enter-active');
+    setTimeout(() => editModal.classList.add('hidden'), 200);
+  }
+
+  function toggleUrgencyUI() {
+    const isStat = document.querySelector('input[name="priority"]:checked').value === 'stat';
+    const submitBtn = document.getElementById('submitRequestBtn');
+    if (isStat) {
+      submitBtn.classList.replace('bg-primary', 'bg-red-600');
+      submitBtn.innerText = 'Dispatch STAT Request';
+    } else {
+      submitBtn.classList.replace('bg-red-600', 'bg-primary');
+      submitBtn.innerText = 'Submit Request';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const toasts = document.querySelectorAll('.toast-message');
+    toasts.forEach(toast => {
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 500);
+      }, 5000);
+    });
+  });
+</script>
+<!-- ===== Confirmation modal (replaces native confirm()) =====
+     Any <form> with data-confirm="..." opens this instead of the browser popup.
+     Optional: data-confirm-title, data-confirm-btn, data-confirm-icon ===== -->
+<style>
+    @keyframes cfmFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes cfmPop  { from { opacity: 0; transform: scale(0.95) translateY(10px); }
+                         to   { opacity: 1; transform: scale(1)    translateY(0); } }
+    #confirmModal:not(.hidden) .cfm-backdrop { animation: cfmFade 0.2s ease-out forwards; }
+    #confirmModal:not(.hidden) .cfm-card     { animation: cfmPop 0.22s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+</style>
+
+<div id="confirmModal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4"
+     role="alertdialog" aria-modal="true"
+     aria-labelledby="confirmModalTitle" aria-describedby="confirmModalMessage">
+
+    <!-- Backdrop -->
+    <div class="cfm-backdrop absolute inset-0 bg-gray-900/40 backdrop-blur-sm" data-confirm-cancel></div>
+
+    <!-- Card -->
+    <div class="cfm-card relative bg-white border border-gray-100 w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 text-center">
+
+        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center text-red-600 mx-auto ring-8 ring-red-50/50">
+            <span id="confirmModalIcon" class="material-symbols-outlined text-[32px]">warning</span>
+        </div>
+
+        <div>
+            <h2 id="confirmModalTitle" class="text-xl font-bold text-gray-900 mb-2">Are you sure?</h2>
+            <p id="confirmModalMessage" class="text-sm text-gray-500 font-medium">This action cannot be undone.</p>
+        </div>
+
+        <div class="flex flex-col-reverse sm:flex-row justify-center gap-3 pt-2">
+            <button type="button" id="confirmModalCancel" data-confirm-cancel
+                    class="w-full sm:w-auto px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300">
+                Cancel
+            </button>
+            <button type="button" id="confirmModalOk"
+                    class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 shadow-md text-sm transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-300">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var modal = document.getElementById('confirmModal');
+        if (!modal) return;
+
+        var titleEl  = document.getElementById('confirmModalTitle');
+        var msgEl    = document.getElementById('confirmModalMessage');
+        var iconEl   = document.getElementById('confirmModalIcon');
+        var okBtn    = document.getElementById('confirmModalOk');
+        var cancelBtn = document.getElementById('confirmModalCancel');
+
+        var pending = null;      // { form, submitter }
+        var lastFocused = null;
+
+        function openConfirm(form, submitter) {
+            pending = { form: form, submitter: submitter || null };
+            lastFocused = document.activeElement;
+
+            titleEl.textContent = form.getAttribute('data-confirm-title') || 'Are you sure?';
+            msgEl.textContent   = form.getAttribute('data-confirm') || 'This action cannot be undone.';
+            iconEl.textContent  = form.getAttribute('data-confirm-icon') || 'warning';
+            okBtn.textContent   = form.getAttribute('data-confirm-btn') || 'Confirm';
+            okBtn.disabled = false;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            cancelBtn.focus();   // safest default focus for destructive actions
+        }
+
+        function closeConfirm() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            pending = null;
+            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+        }
+
+        // Intercept every form that carries data-confirm
+        document.addEventListener('submit', function (e) {
+            var form = e.target;
+            if (!form || !form.hasAttribute || !form.hasAttribute('data-confirm')) return;
+
+            // Second pass (user already confirmed) -> let the browser submit normally
+            if (form.getAttribute('data-confirmed') === 'true') {
+                form.removeAttribute('data-confirmed');
+                return;
+            }
+
+            e.preventDefault();
+            openConfirm(form, e.submitter);
+        }, true);
+
+        okBtn.addEventListener('click', function () {
+            if (!pending) return;
+            var form = pending.form;
+            var submitter = pending.submitter;
+
+            okBtn.disabled = true;               // stop double clicks
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            pending = null;
+
+            form.setAttribute('data-confirmed', 'true');
+            if (typeof form.requestSubmit === 'function') {
+                try { form.requestSubmit(submitter || undefined); }
+                catch (err) { form.submit(); }
+            } else {
+                form.submit();
+            }
+        });
+
+        modal.querySelectorAll('[data-confirm-cancel]').forEach(function (el) {
+            el.addEventListener('click', closeConfirm);
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (modal.classList.contains('hidden')) return;
+
+            if (e.key === 'Escape') { e.preventDefault(); closeConfirm(); return; }
+
+            // Keep Tab focus inside the dialog
+            if (e.key === 'Tab') {
+                var focusables = [cancelBtn, okBtn];
+                var first = focusables[0], last = focusables[focusables.length - 1];
+                if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

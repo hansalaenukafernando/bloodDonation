@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_standard" name="shell-type"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <title>Contact Us | LifeStream - NBTS</title>
+  <style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}
+  .input-field { @apply w-full h-12 border border-surface-container-highest rounded-xl px-4 font-body-sm text-body-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm transition-all; }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container":"#eeeeee","surface-container-highest":"#e2e2e2","inverse-on-surface":"#f0f1f1","secondary":"#506169","on-background":"#1a1c1c","on-tertiary-container":"#fefcff","on-secondary-container":"#55656d","on-error-container":"#93000a","on-secondary-fixed":"#0d1e25","error":"#ba1a1a","on-primary-fixed-variant":"#93000d","error-container":"#ffdad6","outline":"#906f6c","on-primary":"#ffffff","inverse-surface":"#2f3131","primary-fixed":"#ffdad6","surface-variant":"#e2e2e2","surface-tint":"#bb171c","surface-dim":"#dadada","tertiary":"#005cab","on-secondary":"#ffffff","surface":"#f9f9f9","on-primary-container":"#fffbff","secondary-fixed-dim":"#b8c9d3","surface-container-high":"#e8e8e8","primary-fixed-dim":"#ffb4ac","tertiary-fixed-dim":"#a5c8ff","surface-container-low":"#f3f3f3","on-tertiary-fixed-variant":"#004786","on-tertiary-fixed":"#001c3a","tertiary-fixed":"#d4e3ff","surface-container-lowest":"#ffffff","primary":"#b7131a","on-surface":"#1a1c1c","tertiary-container":"#1775d1","surface-bright":"#f9f9f9","outline-variant":"#e4beb9","on-surface-variant":"#5b403d","on-primary-fixed":"#410002","secondary-fixed":"#d4e5ef","on-error":"#ffffff","secondary-container":"#d1e2ec","inverse-primary":"#ffb4ac","on-secondary-fixed-variant":"#394951","primary-container":"#db322f","on-tertiary":"#ffffff","background":"#f9f9f9"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-2xl":"4rem","space-md":"1rem","space-xl":"2.5rem",gutter:"1.5rem","space-sm":"0.5rem","gutter-mobile":"1rem","space-xs":"0.25rem","margin-mobile":"1rem","space-lg":"1.5rem",margin:"2rem"},fontFamily:{"headline-md":["Inter"],"headline-sm":["Inter"],"label-md":["Inter"],"headline-lg-mobile":["Inter"],"headline-lg":["Inter"],"label-lg":["Inter"],"display-hero":["Inter"],"label-sm":["Inter"],"body-md":["Inter"],"display-hero-mobile":["Inter"],"body-sm":["Inter"],"title-md":["Inter"],"body-lg":["Inter"]},fontSize:{"headline-md":["1.5rem",{lineHeight:"1.35",letterSpacing:"-0.01em",fontWeight:"600"}],"headline-sm":["1.25rem",{lineHeight:"1.4",letterSpacing:"0",fontWeight:"600"}],"label-md":["0.75rem",{lineHeight:"1.2",letterSpacing:"0.04em",fontWeight:"600"}],"headline-lg-mobile":["1.75rem",{lineHeight:"1.3",letterSpacing:"-0.01em",fontWeight:"700"}],"headline-lg":["2.25rem",{lineHeight:"1.25",letterSpacing:"-0.02em",fontWeight:"700"}],"label-lg":["0.875rem",{lineHeight:"1.2",letterSpacing:"0.05em",fontWeight:"700"}],"display-hero":["3.5rem",{lineHeight:"1.15",letterSpacing:"-0.03em",fontWeight:"800"}],"label-sm":["0.6875rem",{lineHeight:"1.15",letterSpacing:"0.06em",fontWeight:"600"}],"body-md":["1rem",{lineHeight:"1.55",letterSpacing:"0",fontWeight:"400"}],"display-hero-mobile":["2.25rem",{lineHeight:"1.2",letterSpacing:"-0.02em",fontWeight:"800"}],"body-sm":["0.875rem",{lineHeight:"1.5",letterSpacing:"0",fontWeight:"400"}],"title-md":["1.125rem",{lineHeight:"1.45",letterSpacing:"0",fontWeight:"600"}],"body-lg":["1.125rem",{lineHeight:"1.6",letterSpacing:"0",fontWeight:"400"}]}}}}</script>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased relative">
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
+  <div class="bg-primary text-on-primary">
+    <div class="max-w-7xl mx-auto px-gutter flex flex-col sm:flex-row flex-wrap items-center justify-between py-1.5 gap-2">
+      <div class="flex items-center justify-center sm:justify-start gap-space-md flex-wrap w-full sm:w-auto">
+        <div class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-secondary-fixed">phone_in_talk</span>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-surface-container-high hidden sm:inline">National Blood Helpline:</span>
+          <span class="font-label-md text-label-md font-bold tracking-tight text-surface-container-lowest">011 269 9931 - 4</span>
+        </div>
+        <!--                <div th:if="${not #lists.isEmpty(criticalGroups)}" class="flex items-center gap-2 bg-secondary px-2.5 py-0.5 rounded-full w-full sm:w-auto justify-center mt-1 sm:mt-0">-->
+        <!--                    <span class="w-2 h-2 rounded-full bg-surface-container-lowest animate-pulse shrink-0"></span>-->
+        <!--                    <span class="font-label-sm text-[10px] sm:text-label-sm font-bold text-on-secondary tracking-wide uppercase text-center">Emergency: <span th:each="g,it : ${criticalGroups}"><span th:text="${g}">O-</span><span th:if="${!it.last}">, </span></span> High Need</span>-->
+        <!--                </div>-->
+      </div>
+      <div class="flex items-center justify-center sm:justify-end gap-space-md w-full sm:w-auto mt-2 sm:mt-0">
+        <div class="flex items-center gap-1 text-surface-container-high font-label-sm text-label-sm">
+          <span class="text-surface-container-lowest font-bold">EN</span><span class="opacity-40">/</span>
+          <button class="hover:text-surface-container-lowest transition-colors">සිං</button><span class="opacity-40">/</span>
+          <button class="hover:text-surface-container-lowest transition-colors">தமிழ்</button>
+        </div>
+        <!--                <a th:href="@{/role}" class="w-8 h-8 rounded-full bg-primary hover:bg-secondary border border-on-primary/20 transition-colors flex items-center justify-center cursor-pointer shrink-0" title="Sign In">-->
+        <!--                    <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>-->
+        <!--                </a>-->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Nav -->
+  <div class="min-h-[5rem] max-w-7xl mx-auto px-gutter flex items-center justify-between gap-space-md py-2 relative">
+    <a class="flex items-center gap-3 shrink-0 text-left" data-path="home" th:href="@{/}">
+      <div class="w-11 h-11 rounded-xl bg-secondary flex items-center justify-center text-on-secondary shadow-md shrink-0">
+        <span class="material-symbols-outlined text-2xl">bloodtype</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm tracking-tight text-primary font-bold leading-none">LifeStream</span>
+        <span class="font-label-sm text-[10px] sm:text-label-sm text-on-surface-variant uppercase tracking-wider mt-0.5">National Blood Transfusion Service</span>
+      </div>
+    </a>
+
+    <!-- Desktop Menu -->
+    <nav class="hidden xl:flex items-center gap-1" data-active-classes="bg-primary-container text-on-primary-container font-bold rounded-lg">
+      <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="home" th:href="@{/}">Home</a>
+      <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="services" th:href="@{/services}">Services</a>
+      <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="events-news" th:href="@{/events}">Events</a>
+      <a class="px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md uppercase tracking-wider" data-path="for-donors" th:href="@{/forDonors}">For Donors</a>
+      <a aria-current="page" class="px-3 py-2 transition-colors uppercase tracking-wider bg-primary-container text-on-primary-container font-bold rounded-lg" data-path="contact-us" th:href="@{/contactUs}">Contact Us</a>
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-space-sm">
+      <a class="hidden md:flex px-5 py-2.5 rounded-lg bg-secondary hover:bg-secondary-container text-on-secondary hover:text-on-secondary-container font-label-lg text-label-lg font-bold shadow-md transition-all uppercase tracking-wider items-center gap-2" data-path="blood-donation-booking" th:href="@{/donor/register}">
+        <span class="material-symbols-outlined text-lg">favorite</span>
+        <span>Donate Blood Today</span>
+      </a>
+      <!-- Mobile Menu Toggle -->
+      <button id="mobile-menu-btn" class="xl:hidden p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary flex items-center justify-center transition-colors">
+        <span id="menu-icon" class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div id="mobile-menu" class="hidden xl:hidden flex-col bg-surface border-t border-outline-variant shadow-lg absolute w-full left-0 top-full max-h-[70vh] overflow-y-auto px-gutter py-4 gap-4">
+    <nav class="flex flex-col gap-2">
+      <a class="px-4 py-3 bg-primary-container text-on-primary-container font-label-md text-label-md font-bold rounded-lg uppercase tracking-wider" th:href="@{/}">About Us</a>
+      <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Services</a>
+      <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Events &amp; News</a>
+      <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Publications</a>
+      <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">For Donors</a>
+      <a class="px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md uppercase tracking-wider transition-colors" href="#">Contact Us</a>
+      <a class="md:hidden mt-2 px-4 py-3 bg-secondary text-on-secondary text-center font-label-md text-label-md font-bold rounded-lg uppercase tracking-wider shadow-sm flex justify-center items-center gap-2" th:href="@{/donor/register}">
+        <span class="material-symbols-outlined text-lg">favorite</span> Donate Blood Today
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="w-full pt-36 sm:pt-28 md:pt-24 bg-background">
+  <!-- PAGE HEADER -->
+  <section class="relative w-full overflow-hidden bg-primary text-on-primary py-12 lg:py-20">
+    <div class="absolute top-1/2 -right-24 w-80 h-80 rounded-full bg-primary-container opacity-50 blur-3xl pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-gutter relative z-10 text-center">
+      <span class="font-label-md text-label-md tracking-wider uppercase text-secondary-fixed font-bold">Get In Touch</span>
+      <h1 class="font-display-hero-mobile lg:font-display-hero text-display-hero-mobile lg:text-display-hero tracking-tight leading-tight text-surface-container-lowest font-extrabold mt-4">
+        Contact Us
+      </h1>
+      <p class="font-body-md lg:font-body-lg text-body-md lg:text-body-lg text-surface-container-high max-w-3xl mx-auto mt-6 leading-relaxed">
+        Reach out to the National Blood Transfusion Service headquarters or find assistance for clinical and donor inquiries.
+      </p>
+    </div>
+  </section>
+
+  <section class="w-full py-12 lg:py-space-2xl bg-surface">
+    <div class="max-w-7xl mx-auto px-gutter">
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-space-xl">
+        <!-- Left: Contact Details -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+
+          <!-- Head Office Card -->
+          <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-surface-container/50">
+            <h3 class="font-headline-sm text-headline-sm font-bold text-primary mb-5 border-b border-surface-container pb-3">NBTS Headquarters</h3>
+
+            <div class="flex items-start gap-4 mb-4">
+              <span class="material-symbols-outlined text-secondary text-2xl shrink-0 mt-0.5">location_on</span>
+              <div>
+                <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold block mb-1">Address</span>
+                <span class="font-body-sm text-body-sm text-on-surface leading-relaxed">National Blood Center,<br>555/5D Elvitigala Mawatha,<br>Colombo 05, Sri Lanka</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 mb-4">
+              <span class="material-symbols-outlined text-secondary text-2xl shrink-0 mt-0.5">call</span>
+              <div>
+                <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold block mb-1">General Inquiries</span>
+                <span class="font-body-sm text-body-sm text-on-surface font-semibold">+94 11 269 9931 - 4</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary text-2xl shrink-0 mt-0.5">mail</span>
+              <div>
+                <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold block mb-1">Email Support</span>
+                <span class="font-body-sm text-body-sm text-on-surface">info@nbts.health.gov.lk</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emergency Card -->
+          <div class="bg-error-container/20 rounded-2xl p-6 shadow-sm border border-error-container/50">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="material-symbols-outlined text-secondary-fixed text-3xl">emergency</span>
+              <h3 class="font-title-md text-title-md font-bold text-secondary-fixed">24/7 Transfusion Emergency</h3>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant mb-4 mt-2">For urgent hospital clinical requirements and cross-matching requests.</p>
+            <span class="font-headline-sm text-headline-sm font-black text-primary">Dial 1919</span>
+          </div>
+
+        </div>
+
+        <!-- Right: Contact Form -->
+        <div class="lg:col-span-7 bg-surface-container-lowest rounded-2xl p-8 lg:p-space-xl shadow-md border border-surface-container w-full">
+          <h2 class="font-headline-sm text-headline-sm font-bold text-primary mb-2">Send us a Message</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mb-8">We will respond to your inquiry via email within 1-2 business days.</p>
+
+          <form action="#" method="POST" class="flex flex-col gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="font-label-sm text-label-sm font-bold text-on-surface-variant uppercase tracking-wider block mb-2">Full Name</label>
+                <input type="text" class="input-field" placeholder="John Doe" required>
+              </div>
+              <div>
+                <label class="font-label-sm text-label-sm font-bold text-on-surface-variant uppercase tracking-wider block mb-2">Email Address</label>
+                <input type="email" class="input-field" placeholder="john@example.com" required>
+              </div>
+            </div>
+
+            <div>
+              <label class="font-label-sm text-label-sm font-bold text-on-surface-variant uppercase tracking-wider block mb-2">Subject</label>
+              <select class="input-field text-on-surface font-semibold" required>
+                <option value="" disabled selected>Select Inquiry Type...</option>
+                <option value="Mobile Camp Inquiry">Organize Mobile Campaign</option>
+                <option value="Donor Registration">Donor Eligibility/Registration</option>
+                <option value="Clinical Feedback">Clinical Feedback</option>
+                <option value="Other">Other Information</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="font-label-sm text-label-sm font-bold text-on-surface-variant uppercase tracking-wider block mb-2">Message</label>
+              <textarea class="w-full border border-surface-container-highest rounded-xl p-4 font-body-sm text-body-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm transition-all min-h-[120px]" placeholder="How can we help you today?" required></textarea>
+            </div>
+
+            <button type="submit" class="w-full sm:w-auto sm:self-start mt-2 px-8 py-3.5 rounded-xl bg-primary hover:bg-secondary text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider transition-colors shadow-md flex items-center justify-center gap-2">
+              Send Message <span class="material-symbols-outlined text-lg">send</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="w-full bg-inverse-surface text-inverse-on-surface">
+  <!-- Same standard footer code -->
+  <div class="bg-tertiary text-on-tertiary py-5 border-b border-surface-container-lowest/10">
+    <div class="max-w-7xl mx-auto px-gutter flex flex-col md:flex-row flex-wrap items-center justify-between gap-5 text-center md:text-left">
+      <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 w-full md:w-auto">
+        <span class="material-symbols-outlined text-tertiary-fixed text-3xl sm:text-2xl shrink-0">verified</span>
+        <div class="flex flex-col">
+          <span class="font-label-md text-label-md font-bold uppercase tracking-wider text-tertiary-fixed">WHO Collaborating Centre</span>
+          <span class="font-body-sm text-body-sm text-surface-container-high opacity-90 mt-0.5">Quality in Blood Transfusion Services &amp; Immunohematology</span>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-center md:justify-end gap-3 sm:gap-5 font-label-sm text-label-sm text-surface-container-high w-full md:w-auto">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-base text-tertiary-fixed">domain</span>Ministry of Health Sri Lanka</span>
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-base text-tertiary-fixed">health_and_safety</span>AATM Accredited</span>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-gutter py-12 lg:py-space-xl">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-space-xl">
+      <div class="flex flex-col gap-4 text-center sm:text-left items-center sm:items-start">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary shrink-0 shadow-md">
+            <span class="material-symbols-outlined text-2xl">bloodtype</span>
+          </div>
+          <span class="font-title-md text-title-md font-bold text-inverse-on-surface">LifeStream NBTS</span>
+        </div>
+        <p class="font-body-sm text-body-sm text-surface-dim mt-2 leading-relaxed">The national apex body responsible for the total and comprehensive blood transfusion services throughout the island of Sri Lanka.</p>
+      </div>
+      <div class="flex flex-col gap-4 text-center sm:text-left items-center sm:items-start">
+        <span class="font-title-md text-title-md font-bold text-inverse-on-surface uppercase tracking-wider border-b border-outline/30 pb-3 w-full max-w-[240px] sm:max-w-none">Headquarters</span>
+        <div class="flex flex-col gap-4 font-body-sm text-body-sm text-surface-dim items-center sm:items-start w-full">
+          <div class="flex items-start justify-center sm:justify-start gap-3 w-full">
+            <span class="material-symbols-outlined text-lg shrink-0 text-secondary-fixed mt-0.5 hidden sm:block">location_on</span>
+            <span class="leading-relaxed text-center sm:text-left">National Blood Center,<br/>555/5D Elvitigala Mawatha,<br/>Colombo 05, Sri Lanka</span>
+          </div>
+          <div class="flex items-center justify-center sm:justify-start gap-3 w-full mt-2">
+            <span class="material-symbols-outlined text-lg shrink-0 text-secondary-fixed hidden sm:block">call</span>
+            <span class="font-semibold">Helpline: +94 11 269 9931-4</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-4 text-center sm:text-left items-center sm:items-start">
+        <span class="font-title-md text-title-md font-bold text-inverse-on-surface uppercase tracking-wider border-b border-outline/30 pb-3 w-full max-w-[240px] sm:max-w-none">Quick Portals</span>
+        <nav class="flex flex-col gap-3.5 font-body-sm text-body-sm items-center sm:items-start w-full">
+          <a class="text-surface-dim hover:text-inverse-on-surface hover:underline transition-all flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm hidden sm:inline">chevron_right</span>Donor Eligibility Criteria</a>
+          <a class="text-surface-dim hover:text-inverse-on-surface hover:underline transition-all flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm hidden sm:inline">chevron_right</span>Organize a Mobile Blood Drive</a>
+        </nav>
+      </div>
+      <div class="flex flex-col gap-4 text-center sm:text-left items-center sm:items-start">
+        <span class="font-title-md text-title-md font-bold text-inverse-on-surface uppercase tracking-wider border-b border-outline/30 pb-3 w-full max-w-[240px] sm:max-w-none">Civic Engagement</span>
+        <p class="font-body-sm text-body-sm text-surface-dim leading-relaxed">Follow the National Blood Transfusion Service for live campaign schedules.</p>
+        <div class="flex items-center justify-center sm:justify-start gap-3 mt-3 w-full">
+          <a class="w-11 h-11 rounded-xl bg-surface-container-high/10 hover:bg-primary transition-colors flex items-center justify-center text-inverse-on-surface" href="#"><span class="material-symbols-outlined text-xl">public</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-surface-container-low/5 py-5 lg:py-6 border-t border-outline/20">
+    <div class="max-w-7xl mx-auto px-gutter flex flex-col md:flex-row items-center justify-between text-surface-dim font-label-sm text-label-sm gap-4 text-center md:text-left">
+      <div class="font-medium">© 2026 National Blood Transfusion Service (NBTS) - Ministry of Health Sri Lanka. All Rights Reserved.</div>
+      <div class="flex flex-wrap items-center justify-center md:justify-end gap-5">
+        <a class="hover:text-inverse-on-surface hover:underline transition-all" href="#">Privacy Policy</a>
+        <a class="hover:text-inverse-on-surface hover:underline transition-all" href="#">Government Web Standards</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+
+    if (mobileBtn && mobileMenu && menuIcon) {
+      mobileBtn.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.remove('hidden');
+          mobileMenu.classList.add('flex');
+          menuIcon.innerText = 'close';
+        } else {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('flex');
+          menuIcon.innerText = 'menu';
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>
