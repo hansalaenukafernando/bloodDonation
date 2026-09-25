@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ========================================== -->
+<!-- ORGANIZATION DESKTOP SIDEBAR FRAGMENT      -->
+<!-- ========================================== -->
+<th:block th:fragment="desktop-sidebar">
+
+<!-- ===== Responsive sidebar: slide-in drawer below 768px, normal sidebar from 768px up ===== -->
+<style>
+  .app-sidebar {
+    position: fixed; top: var(--hdr-h, 73px); bottom: 0; left: 0; z-index: 60;
+    width: 18rem; max-width: 85vw; overflow-y: auto; overscroll-behavior: contain;
+    transform: translateX(-100%); visibility: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1), visibility 0s linear .3s;
+  }
+  .app-sidebar.is-open {
+    transform: translateX(0); visibility: visible;
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1), visibility 0s;
+  }
+  .sidebar-overlay {
+    position: fixed; top: var(--hdr-h, 73px); right: 0; bottom: 0; left: 0; z-index: 55;
+    background: rgba(17, 24, 39, 0.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none; transition: opacity .3s ease;
+  }
+  .sidebar-overlay.is-open { opacity: 1; pointer-events: auto; }
+
+  /* Menu (hamburger) button that JS puts at the left of the top bar */
+  .sidebar-toggle {
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+    width: 40px; height: 40px; margin-left: -6px; padding: 0; border: 0; border-radius: 10px;
+    background: transparent; color: #374151; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: background-color .15s ease, transform .1s ease;
+  }
+  .sidebar-toggle:hover { background: #f3f4f6; }
+  .sidebar-toggle:active { transform: scale(.94); }
+  .sidebar-toggle:focus-visible { outline: 2px solid #b7131a; outline-offset: 2px; }
+  .sidebar-toggle .material-symbols-outlined { font-size: 26px; }
+  header .sidebar-head { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+  header .sidebar-brand { min-width: 0; }
+  @media (max-width: 479px) { header .sidebar-brand { font-size: 1rem; line-height: 1.25rem; } }
+
+  /* While the drawer is open: lock page scroll */
+  body.sidebar-open { overflow: hidden; }
+
+  /* Desktop: back to the normal sticky sidebar, no button, no overlay */
+  @media (min-width: 768px) {
+    .app-sidebar {
+      position: sticky; top: 73px; bottom: auto; left: auto; max-width: none;
+      z-index: 10; width: 16rem; min-width: 260px; height: calc(100vh - 73px);
+      transform: none; visibility: visible; box-shadow: none; transition: none;
+    }
+    .sidebar-overlay, .sidebar-toggle { display: none; }
+  }
+</style>
+
+<!-- Dark backdrop behind the drawer (small screens only) -->
+<div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+<aside id="appSidebar" class="app-sidebar flex flex-col p-6 bg-white border-r border-gray-100" aria-label="Main navigation">
+
+    <!-- Sidebar Header / Logo area -->
+    <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 bg-red-50 border border-red-100 rounded-xl flex items-center justify-center text-primary shadow-sm">
+            <span class="material-symbols-outlined icon-filled text-[24px]">groups</span>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold text-gray-900 tracking-tight">LifeStream</h2>
+            <p class="text-xs font-medium text-gray-500">Partner Portal</p>
+        </div>
+    </div>
+
+    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Navigation</p>
+
+    <!-- Navigation Links -->
+    <nav class="flex flex-col gap-2 flex-1">
+
+        <!-- Dashboard -->
+        <a th:href="@{/organization/dashboard}" data-nav="/organization/dashboard" class="organization-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+            <span class="material-symbols-outlined text-[22px]">dashboard</span>
+            <span class="text-sm">Dashboard</span>
+        </a>
+
+        <!-- Camp History -->
+        <a th:href="@{/organization/camps/history}" data-nav="/organization/camps/history" class="organization-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+            <span class="material-symbols-outlined text-[22px]">history</span>
+            <span class="text-sm">Camp History</span>
+        </a>
+
+        <!-- Request Camp -->
+        <a th:href="@{/organization/camps}" data-nav="/organization/camps" class="organization-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+            <span class="material-symbols-outlined text-[22px]">event_add</span>
+            <span class="text-sm">Request Camp</span>
+        </a>
+
+        <!-- Profile Settings -->
+        <a th:href="@{/organization/profile}" data-nav="/organization/profile" class="organization-nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900">
+            <span class="material-symbols-outlined text-[22px]">domain</span>
+            <span class="text-sm">Profile Settings</span>
+        </a>
+
+        <!-- Divider -->
+        <div class="h-px bg-gray-100 my-2 mx-2"></div>
+
+        <!-- Logout Button -->
+        <a th:href="@{/organization/logout}" class="flex items-center gap-3 text-gray-600 font-medium px-4 py-3 hover:bg-red-50 hover:text-red-700 rounded-xl transition-all duration-200 group">
+            <span class="material-symbols-outlined text-[22px] group-hover:text-red-600 transition-colors">logout</span>
+            <span class="text-sm">Sign Out</span>
+        </a>
+    </nav>
+
+    <!-- Request New Camp Button (Bottom) -->
+    <div class="mt-auto pt-6">
+        <a th:href="@{/organization/camps}" class="w-full bg-red-50 text-red-700 border border-red-200 font-semibold py-2.5 px-4 rounded-xl hover:bg-red-100 transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2 text-sm">
+            <span class="material-symbols-outlined text-[20px]">campaign</span>
+            Request New Camp
+        </a>
+    </div>
+</aside>
+
+<script>
+  // Turns the sidebar into a slide-in drawer on small screens, opened by a menu button in the top bar.
+  (function () {
+    var BP = 768;   // keep equal to the @media (min-width) above
+    var sidebar = document.getElementById('appSidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var header  = document.querySelector('body > header') || document.querySelector('header');
+    if (!sidebar || !overlay || !header || document.getElementById('sidebarToggle')) return;
+
+    // 1) Menu button, placed at the left of the top bar
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'sidebarToggle';
+    btn.className = 'sidebar-toggle';
+    btn.setAttribute('aria-label', 'Open menu');
+    btn.setAttribute('aria-controls', 'appSidebar');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">menu</span>';
+    var icon = btn.firstChild;
+
+    var row = header.firstElementChild;              // the flex row: brand ... profile
+    var brand = row && row.firstElementChild;
+    if (brand) {
+      var head = document.createElement('div');
+      head.className = 'sidebar-head';
+      brand.classList.add('sidebar-brand');
+      row.insertBefore(head, brand);
+      head.appendChild(btn);
+      head.appendChild(brand);
+    } else {
+      header.insertBefore(btn, header.firstChild);
+    }
+
+    // 2) Keep the drawer exactly below the top bar (its height can change on small screens)
+    function measure() {
+      document.documentElement.style.setProperty('--hdr-h', header.offsetHeight + 'px');
+    }
+    measure();
+    window.addEventListener('load', measure);
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(header);
+
+    // 3) Open / close
+    function isOpen() { return sidebar.classList.contains('is-open'); }
+    function setOpen(open) {
+      sidebar.classList.toggle('is-open', open);
+      overlay.classList.toggle('is-open', open);
+      document.body.classList.toggle('sidebar-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      icon.textContent = open ? 'close' : 'menu';
+      if (open) {
+        measure();
+        // focus the first link once the slide-in animation has finished (browsers ignore focus() mid-animation)
+        setTimeout(function () {
+          var first = sidebar.querySelector('a[href]');
+          if (isOpen() && first) first.focus({ preventScroll: true });
+        }, 320);
+      }
+    }
+
+    btn.addEventListener('click', function () { setOpen(!isOpen()); });
+    overlay.addEventListener('click', function () { setOpen(false); });
+    sidebar.addEventListener('click', function (e) {
+      if (e.target.closest('a[href], button')) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen()) { setOpen(false); btn.focus(); }
+    });
+    window.addEventListener('resize', function () {
+      measure();
+      if (window.innerWidth >= BP && isOpen()) setOpen(false);
+    });
+  })();
+</script>
+
+</th:block>
+
+<!-- ========================================== -->
+<!-- Active tab highlighter — must be explicitly -->
+<!-- included on every page via th:replace.      -->
+<!-- ========================================== -->
+<script th:fragment="nav-active-script">
+    (function () {
+        const path = window.location.pathname;
+
+        function highlight(selector, activeOnClasses, activeOffClasses) {
+            let best = null;
+            document.querySelectorAll(selector).forEach(function (link) {
+                const target = link.getAttribute('data-nav');
+                if (target && (path === target || path.startsWith(target + '/'))) {
+                    if (!best || target.length > best.getAttribute('data-nav').length) best = link;
+                }
+            });
+            document.querySelectorAll(selector).forEach(function (link) {
+                const isActive = link === best;
+                activeOnClasses.forEach(c => link.classList.toggle(c, isActive));
+                activeOffClasses.forEach(c => link.classList.toggle(c, !isActive));
+            });
+        }
+
+        highlight('.organization-nav-link',
+            ['bg-red-50', 'text-red-700', 'font-semibold'],
+            ['text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900']);
+    })();
+</script>
+
+</body>
+</html>
