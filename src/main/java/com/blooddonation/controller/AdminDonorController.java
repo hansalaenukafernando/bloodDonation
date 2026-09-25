@@ -2,6 +2,7 @@ package com.blooddonation.controller;
 
 import com.blooddonation.entity.Donor;
 import com.blooddonation.service.AdminDonorService;
+import com.blooddonation.util.Validate;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,19 @@ public class AdminDonorController {
                               HttpSession session,
                               RedirectAttributes redirectAttributes) {
         if (session.getAttribute("admin") == null) return "redirect:/admin/login";
+
+        String error = Validate.first(
+                Validate.required("Donor", donorId),
+                Validate.name("Donor name", name),
+                Validate.email("Email", email),
+                Validate.phone("Contact number", contactNumber),
+                Validate.bloodGroup("Blood group", bloodGroup),
+                Validate.text("Address", address, 5, 255)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/admin/donors";
+        }
 
         try {
             adminDonorService.updateDonorByAdmin(donorId, name, email, contactNumber, bloodGroup, address);

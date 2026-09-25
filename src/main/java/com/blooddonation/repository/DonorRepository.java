@@ -21,4 +21,7 @@ public interface DonorRepository extends JpaRepository<Donor, Integer> {
 
     // Find donor by email (useful for login later)
     Optional<Donor> findByEmail(String email);
+
+    // Public homepage: count of donors with a given status (e.g. "Active")
+    long countByStatus(String status);
 }

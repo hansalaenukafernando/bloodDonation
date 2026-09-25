@@ -173,21 +173,21 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="input-label" for="name">Full Name</label>
-              <input class="input-field" id="name" name="name" placeholder="John Doe" type="text" required/>
+              <input class="input-field" id="name" name="name" placeholder="John Doe" type="text"/>
             </div>
             <div>
               <label class="input-label" for="nic">NIC Number</label>
-              <input class="input-field" id="nic" name="nic" placeholder="e.g., 199912345678 or 991234567V" type="text" required/>
+              <input class="input-field" id="nic" name="nic" placeholder="e.g., 199912345678 or 991234567V" type="text"/>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="input-label" for="email">Email Address</label>
-              <input class="input-field" id="email" name="email" placeholder="name@example.com" type="email" required/>
+              <input class="input-field" id="email" name="email" placeholder="name@example.com" type="text"/>
             </div>
             <div>
               <label class="input-label" for="contactNumber">Phone Number</label>
-              <input class="input-field" id="contactNumber" name="contactNumber" placeholder="07XXXXXXXX" type="tel" required/>
+              <input class="input-field" id="contactNumber" name="contactNumber" placeholder="07XXXXXXXX" type="tel"/>
             </div>
           </div>
         </div>
@@ -198,7 +198,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="input-label" for="bloodGroup">Blood Type</label>
-              <select class="input-field appearance-none" id="bloodGroup" name="bloodGroup" required>
+              <select class="input-field appearance-none" id="bloodGroup" name="bloodGroup">
                 <option disabled="" selected="" value="">Select type</option>
                 <option value="O+">O Positive (O+)</option>
                 <option value="O-">O Negative (O-)</option>
@@ -212,7 +212,7 @@
             </div>
             <div>
               <label class="input-label" for="address">Residential Address</label>
-              <input class="input-field" id="address" name="address" placeholder="123 Main St, City" type="text" required/>
+              <input class="input-field" id="address" name="address" placeholder="123 Main St, City" type="text"/>
             </div>
           </div>
         </div>
@@ -223,11 +223,11 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="input-label" for="password">Password</label>
-              <input class="input-field" id="password" name="password" placeholder="Create a password" type="password" required minlength="6"/>
+              <input class="input-field" id="password" name="password" placeholder="Create a password" type="password" minlength="6"/>
             </div>
             <div>
               <label class="input-label" for="confirmPassword">Confirm Password</label>
-              <input class="input-field" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" type="password" required/>
+              <input class="input-field" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" type="password"/>
               <!-- Validation error message container -->
               <p id="password-error" class="text-red-500 text-xs mt-1 hidden">Passwords do not match!</p>
             </div>
@@ -237,7 +237,7 @@
         <!-- Agreements -->
         <div class="mt-10 pt-4">
           <label class="flex items-start gap-3 cursor-pointer">
-            <input class="mt-1 w-4 h-4 text-primary bg-white border-surface-container-highest rounded focus:ring-primary focus:ring-2" type="checkbox" required/>
+            <input class="mt-1 w-4 h-4 text-primary bg-white border-surface-container-highest rounded focus:ring-primary focus:ring-2" type="checkbox"/>
             <span class="text-sm text-on-surface-variant">
               I verify that the information provided is accurate and I agree to the LifeStream <a class="text-tertiary hover:underline" href="#">Terms of Service</a> and <a class="text-tertiary hover:underline" href="#">Privacy Policy</a> regarding medical data handling.
             </span>

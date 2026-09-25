@@ -1,5 +1,6 @@
 package com.blooddonation.controller;
 
+import com.blooddonation.util.Validate;
 import com.blooddonation.entity.Donor;
 import com.blooddonation.service.DonorService;
 import jakarta.servlet.http.HttpSession;
@@ -42,6 +43,17 @@ public class DonorProfileController {
         Donor loggedInDonor = (Donor) session.getAttribute("donor");
         if (loggedInDonor == null) return "redirect:/donor/login";
 
+        String error = Validate.first(
+                Validate.name("Full name", name),
+                Validate.email("Email", email),
+                Validate.phone("Contact number", contactNumber),
+                Validate.text("Address", address, 5, 255)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/donor/profile";
+        }
+
         try {
             Donor updatedDonor = donorService.updateDonorProfile(
                     loggedInDonor.getDonorId(), name, email, contactNumber, address);
@@ -60,6 +72,15 @@ public class DonorProfileController {
                                  RedirectAttributes redirectAttributes) {
         Donor loggedInDonor = (Donor) session.getAttribute("donor");
         if (loggedInDonor == null) return "redirect:/donor/login";
+
+        String error = Validate.first(
+                Validate.required("Current password", currentPassword),
+                Validate.password("New password", newPassword)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/donor/profile";
+        }
 
         try {
             donorService.updatePassword(loggedInDonor.getDonorId(), currentPassword, newPassword);

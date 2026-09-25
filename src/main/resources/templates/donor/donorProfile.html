@@ -119,7 +119,7 @@
     <aside th:replace="~{donor/fragments/sidebar :: desktop-sidebar}"></aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-6 lg:p-8 overflow-y-auto pb-24 md:pb-10">
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto pb-10">
 
         <!-- Page Header -->
         <header class="mb-8 border-b border-gray-200 pb-5">
@@ -144,7 +144,7 @@
                     <form class="grid grid-cols-1 md:grid-cols-2 gap-6" method="POST" th:action="@{/donor/profile/update}">
                         <div class="flex flex-col">
                             <label class="field-label">Full Name</label>
-                            <input class="input-field font-medium" type="text" name="name" th:value="${donor.name}" required/>
+                            <input class="input-field font-medium" type="text" name="name" th:value="${donor.name}"/>
                         </div>
                         <div class="flex flex-col">
                             <label class="field-label">NIC Number <span class="normal-case font-sans font-normal text-gray-400 text-xs">(cannot be changed)</span></label>
@@ -152,11 +152,11 @@
                         </div>
                         <div class="flex flex-col">
                             <label class="field-label">Email Address</label>
-                            <input class="input-field font-medium" type="email" name="email" th:value="${donor.email}" required/>
+                            <input class="input-field font-medium" type="text" name="email" th:value="${donor.email}"/>
                         </div>
                         <div class="flex flex-col">
                             <label class="field-label">Phone Number</label>
-                            <input class="input-field font-medium" type="tel" name="contactNumber" th:value="${donor.contactNumber}" required/>
+                            <input class="input-field font-medium" type="tel" name="contactNumber" th:value="${donor.contactNumber}"/>
                         </div>
                         <div class="flex flex-col md:col-span-2">
                             <label class="field-label">Mailing Address</label>
@@ -182,11 +182,11 @@
                     <form class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end" method="POST" th:action="@{/donor/profile/update-password}">
                         <div class="flex flex-col md:col-span-2">
                             <label class="field-label">Current Password</label>
-                            <input class="input-field" type="password" name="currentPassword" placeholder="••••••••" required/>
+                            <input class="input-field" type="password" name="currentPassword" placeholder="••••••••"/>
                         </div>
                         <div class="flex flex-col md:col-span-2">
                             <label class="field-label">New Password</label>
-                            <input class="input-field" type="password" name="newPassword" placeholder="••••••••" required minlength="6"/>
+                            <input class="input-field" type="password" name="newPassword" placeholder="••••••••" minlength="6"/>
                         </div>
                         <div class="flex flex-col md:col-span-2 items-end justify-end pt-2">
                             <button type="submit" class="px-6 py-2.5 rounded-lg bg-gray-900 text-white font-semibold hover:bg-gray-800 shadow-md text-sm transition-all active:scale-95">
@@ -219,8 +219,6 @@
     </main>
 </div>
 
-<!-- Mobile Nav -->
-<nav th:replace="~{donor/fragments/sidebar :: mobile-nav}"></nav>
 <div th:replace="~{donor/fragments/sidebar :: nav-active-script}"></div>
 
 <script>

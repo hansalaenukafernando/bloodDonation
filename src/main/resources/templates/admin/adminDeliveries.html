@@ -163,20 +163,20 @@
                         <td class="px-6 py-4 text-center">
                             <form th:action="@{/admin/deliveries/dispatch/{id}(id=${req.requestId})}" method="POST" class="flex flex-wrap items-center justify-center gap-2">
                                 <!-- Blood Group Dropdown -->
-                                <select name="bloodGroupUsed" class="input-field w-auto py-1.5 font-semibold text-xs text-gray-900" required>
+                                <select name="bloodGroupUsed" class="input-field w-auto py-1.5 font-semibold text-xs text-gray-900">
                                     <option value="" disabled>Blood Group</option>
                                     <option th:each="bg : ${bloodGroups}"
                                             th:value="${bg}" th:text="${bg}" th:selected="${bg == req.bloodGroup}">O+</option>
                                 </select>
 
                                 <!-- Driver Dropdown -->
-                                <select name="driverId" class="input-field w-auto py-1.5 font-semibold text-xs text-gray-900" required>
+                                <select name="driverId" class="input-field w-auto py-1.5 font-semibold text-xs text-gray-900">
                                     <option value="" disabled selected>Select Driver</option>
                                     <option th:each="driver : ${drivers}" th:value="${driver.driverId}" th:text="${driver.name}">Driver Name</option>
                                 </select>
 
                                 <!-- Cool Box Dropdown -->
-                                <select name="coolBoxId" class="input-field w-auto py-1.5 font-semibold text-xs text-gray-900" required>
+                                <select name="coolBoxId" class="input-field w-auto py-1.5 font-semibold text-xs text-gray-900">
                                     <option value="" disabled selected>Select Cool Box</option>
                                     <option th:each="box : ${coolBoxes}" th:value="${box.boxId}" th:text="${box.boxCode}">Box 01</option>
                                 </select>

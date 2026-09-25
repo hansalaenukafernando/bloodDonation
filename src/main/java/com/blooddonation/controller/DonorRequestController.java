@@ -1,5 +1,6 @@
 package com.blooddonation.controller;
 
+import com.blooddonation.util.Validate;
 import com.blooddonation.entity.Donor;
 import com.blooddonation.entity.DonorRequest;
 import com.blooddonation.entity.Location;
@@ -54,12 +55,22 @@ public class DonorRequestController {
         Donor loggedInDonor = (Donor) session.getAttribute("donor");
         if (loggedInDonor == null) return "redirect:/donor/login";
 
+        LocalDate preferredDate = Validate.parseDate(donationDate);
+        String error = Validate.first(
+                Validate.required("Donation center", locationId),
+                Validate.futureDate("Donation date", preferredDate)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/donor/requests";
+        }
+
         try {
             Location selectedLocation = locationRepository.findById(locationId).orElseThrow();
             DonorRequest request = new DonorRequest();
             request.setDonor(loggedInDonor);
             request.setLocation(selectedLocation);
-            request.setPreferredDate(LocalDate.parse(donationDate));
+            request.setPreferredDate(preferredDate);
 
             requestService.saveRequest(request);
             redirectAttributes.addFlashAttribute("successMessage", "Donation request scheduled successfully!");
@@ -77,11 +88,22 @@ public class DonorRequestController {
                                 RedirectAttributes redirectAttributes) {
         if (session.getAttribute("donor") == null) return "redirect:/donor/login";
 
+        LocalDate preferredDate = Validate.parseDate(donationDate);
+        String error = Validate.first(
+                Validate.required("Request", requestId),
+                Validate.required("Donation center", locationId),
+                Validate.futureDate("Donation date", preferredDate)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/donor/requests";
+        }
+
         try {
             Location selectedLocation = locationRepository.findById(locationId).orElseThrow();
             DonorRequest request = new DonorRequest();
             request.setLocation(selectedLocation);
-            request.setPreferredDate(LocalDate.parse(donationDate));
+            request.setPreferredDate(preferredDate);
 
             requestService.updateRequest(requestId, request);
             redirectAttributes.addFlashAttribute("successMessage", "Donation request updated successfully!");
