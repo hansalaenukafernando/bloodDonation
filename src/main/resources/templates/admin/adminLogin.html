@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Admin Login | LifeStream</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-container":"#eeeeee","surface-container-highest":"#e2e2e2","inverse-on-surface":"#f0f1f1","secondary":"#506169","on-background":"#1a1c1c","on-tertiary-container":"#fefcff","on-secondary-container":"#55656d","on-error-container":"#93000a","on-secondary-fixed":"#0d1e25","error":"#ba1a1a","on-primary-fixed-variant":"#93000d","error-container":"#ffdad6","outline":"#906f6c","on-primary":"#ffffff","inverse-surface":"#2f3131","primary-fixed":"#ffdad6","surface-variant":"#e2e2e2","surface-tint":"#bb171c","surface-dim":"#dadada","tertiary":"#005cab","on-secondary":"#ffffff","surface":"#f9f9f9","on-primary-container":"#fffbff","secondary-fixed-dim":"#b8c9d3","surface-container-high":"#e8e8e8","primary-fixed-dim":"#ffb4ac","tertiary-fixed-dim":"#a5c8ff","surface-container-low":"#f3f3f3","on-tertiary-fixed-variant":"#004786","on-tertiary-fixed":"#001c3a","tertiary-fixed":"#d4e3ff","surface-container-lowest":"#ffffff","primary":"#b7131a","on-surface":"#1a1c1c","tertiary-container":"#1775d1","surface-bright":"#f9f9f9","outline-variant":"#e4beb9","on-surface-variant":"#5b403d","on-primary-fixed":"#410002","secondary-fixed":"#d4e5ef","on-error":"#ffffff","secondary-container":"#d1e2ec","inverse-primary":"#ffb4ac","on-secondary-fixed-variant":"#394951","primary-container":"#db322f","on-tertiary":"#ffffff","background":"#f9f9f9"},"fontFamily":{"headline-lg":["Inter"],"body-md":["Inter"],"label-sm":["Inter"],"headline-sm":["Inter"]}}}}</script>
+    <style>
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast-slide-in { animation: slideIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased relative">
+
+<!-- Toast Notification Container -->
+<div id="toast-container" class="fixed top-5 right-5 z-[200] flex flex-col gap-2">
+    <div th:if="${successMessage}" class="toast-message toast-slide-in bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-center justify-between w-80">
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-green-600">check_circle</span><span th:text="${successMessage}" class="text-sm font-medium"></span></div>
+        <button onclick="this.parentElement.remove()" class="text-green-700 font-bold ml-4">&times;</button>
+    </div>
+    <div th:if="${errorMessage}" class="toast-message toast-slide-in bg-red-100 border-l-4 border-red-600 text-red-800 p-4 rounded shadow-lg flex items-center justify-between w-80">
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-red-600">error</span><span th:text="${errorMessage}" class="text-sm font-medium"></span></div>
+        <button onclick="this.parentElement.remove()" class="text-red-800 font-bold ml-4">&times;</button>
+    </div>
+</div>
+
+<main class="w-full flex flex-col md:flex-row h-screen">
+    <div class="hidden md:flex md:w-1/2 bg-on-background relative overflow-hidden items-end p-lg">
+        <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop');"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-on-background via-on-background/80 to-transparent"></div>
+        <div class="relative z-10 w-full text-left flex flex-col gap-sm">
+            <div class="flex items-center gap-xs">
+                <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+                <h1 class="text-3xl font-bold text-on-primary">LifeStream Central</h1>
+            </div>
+            <p class="text-lg text-surface-container-highest max-w-md">Master control terminal for network logistics, user verification, and system health.</p>
+        </div>
+    </div>
+
+    <div class="w-full md:w-1/2 flex items-center justify-center p-md md:p-lg bg-surface relative">
+        <div class="w-full max-w-md space-y-xl">
+            <div class="text-center space-y-xs">
+                <h2 class="text-3xl font-bold text-on-surface">System Administrator</h2>
+                <p class="text-sm text-secondary">Authorized personnel only.</p>
+            </div>
+
+            <form class="space-y-6" method="POST" th:action="@{/admin/login}">
+                <div class="space-y-4">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-semibold text-on-surface" for="username">Admin Username</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-lg">shield_person</span>
+                            <input class="w-full pl-10 pr-3 py-2 border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary outline-none" id="username" name="username" type="text"/>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-semibold text-on-surface" for="password">Master Password</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-lg">key</span>
+                            <input class="w-full pl-10 pr-3 py-2 border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary outline-none" id="password" name="password" type="password"/>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-full bg-primary text-white font-bold py-3 rounded-lg shadow-md hover:bg-surface-tint transition-all" type="submit">Access System</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Toast Auto-Dismiss (5 seconds)
+    document.addEventListener('DOMContentLoaded', function() {
+        const toasts = document.querySelectorAll('.toast-message');
+        toasts.forEach(toast => {
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+        });
+    });
+</script>
+</body>
+</html>
