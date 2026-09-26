@@ -2,6 +2,7 @@ package com.blooddonation.controller;
 
 import com.blooddonation.entity.Organization;
 import com.blooddonation.service.AdminOrganizationService;
+import com.blooddonation.util.Validate;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +42,21 @@ public class AdminOrganizationController {
                                      @RequestParam("phone") String phone,
                                      HttpSession session, RedirectAttributes ra) {
         if (session.getAttribute("admin") == null) return "redirect:/admin/login";
+
+        String error = Validate.first(
+                Validate.required("Organization", orgId),
+                Validate.title("Organization name", orgName),
+                Validate.required("Organization type", orgType),
+                Validate.optionalText("Registration number", regNumber, 50),
+                Validate.text("Address", address, 5, 255),
+                Validate.name("Coordinator name", coordinatorName),
+                Validate.email("Email", email),
+                Validate.phone("Phone number", phone)
+        );
+        if (error != null) {
+            ra.addFlashAttribute("errorMessage", error);
+            return "redirect:/admin/organizations";
+        }
 
         try {
             adminOrgService.updateOrganization(orgId, orgName, orgType, regNumber, address, coordinatorName, email, phone);
