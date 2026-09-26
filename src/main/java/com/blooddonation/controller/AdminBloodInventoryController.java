@@ -1,5 +1,6 @@
 package com.blooddonation.controller;
 
+import com.blooddonation.util.Validate;
 import com.blooddonation.service.BloodBagService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,17 @@ public class AdminBloodInventoryController {
                                    RedirectAttributes ra) {
         if (session.getAttribute("admin") == null) {
             return "redirect:/admin/login";
+        }
+
+        String error = Validate.first(
+                Validate.bloodGroup("Blood group", bloodGroup),
+                Validate.notFutureDate("Collection date", collectionDate),
+                Validate.required("Expiry date", expiryDate),
+                Validate.afterDate("Expiry date", expiryDate, "Collection date", collectionDate)
+        );
+        if (error != null) {
+            ra.addFlashAttribute("errorMessage", error);
+            return "redirect:/admin/inventory";
         }
 
         try {

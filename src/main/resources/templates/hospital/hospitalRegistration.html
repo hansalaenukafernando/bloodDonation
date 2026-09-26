@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Hospital Registration | LifeStream Clinical</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        "primary": "#b7131a",
+                        "background": "#f9fafb",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        /* Premium Input Fields */
+        .input-field {
+            width: 100%;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            padding: 0.625rem 0.875rem;
+            background-color: #ffffff;
+            outline: none;
+            font-size: 0.875rem;
+            color: #111827;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .input-field:focus {
+            border-color: #b7131a;
+            box-shadow: 0 0 0 2px rgba(183, 19, 26, 0.1);
+        }
+        .input-field::placeholder {
+            color: #9CA3AF;
+        }
+
+        /* Custom Scrollbar for the left panel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+    </style>
+</head>
+<body class="bg-background text-gray-900 min-h-screen flex antialiased selection:bg-red-100 selection:text-primary">
+
+<main class="w-full flex flex-col md:flex-row h-screen overflow-hidden">
+
+    <!-- Left Side: Registration Form (Scrollable) -->
+    <div class="w-full md:w-[55%] lg:w-[50%] flex justify-center p-6 md:p-12 bg-white relative overflow-y-auto h-full shadow-[10px_0_30px_rgba(0,0,0,0.02)] z-10">
+        <div class="w-full max-w-lg space-y-8 py-6 my-auto">
+
+            <!-- Logo & Header -->
+            <div>
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-primary border border-red-100 shadow-sm">
+                        <span class="material-symbols-outlined icon-filled text-[24px]">local_hospital</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">LifeStream <span class="font-medium text-gray-500">Clinical</span></h1>
+                </div>
+
+                <h2 class="text-3xl font-bold text-gray-900 tracking-tight mb-2">Register Facility</h2>
+                <p class="text-sm text-gray-500 font-medium">Join the LifeStream network to access real-time blood inventory and emergency request routing.</p>
+            </div>
+
+            <!-- Alert Box for Errors -->
+            <div th:if="${errorMessage}" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-lg shadow-sm">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined icon-filled text-red-500">error</span>
+                    <span class="font-medium text-sm" th:text="${errorMessage}"></span>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="registrationForm" th:action="@{/hospital/register}" th:object="${hospital}" method="POST" class="space-y-8">
+
+                <!-- Facility Details -->
+                <div>
+                    <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Facility Details</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5" for="facilityName">Facility Name</label>
+                            <input class="input-field" id="facilityName" th:field="*{name}" placeholder="e.g. Springfield General Hospital" type="text"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5" for="licenseNumber">Clinical License ID</label>
+                            <input class="input-field" id="licenseNumber" th:field="*{licenseNumber}" placeholder="XX-1234567" type="text"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div>
+                    <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Contact Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5" for="workEmail">Facility Email</label>
+                            <input class="input-field" id="workEmail" th:field="*{email}" placeholder="admin@hospital.org" type="text"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5" for="workPhone">Contact Number</label>
+                            <input class="input-field" id="workPhone" th:field="*{contactNumber}" placeholder="(555) 000-0000" type="tel"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div>
+                    <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Account Security</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5" for="password">Create Password</label>
+                            <input class="input-field" id="password" th:field="*{passwordHash}" placeholder="••••••••" type="password"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5" for="confirmPassword">Confirm Password</label>
+                            <input class="input-field" id="confirmPassword" name="confirmPassword" placeholder="••••••••" type="password"/>
+                            <p id="passwordMismatchError" class="text-red-600 text-[11px] mt-1.5 font-semibold hidden flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">error</span> Passwords do not match.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agreements -->
+                <div class="pt-2">
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input class="mt-0.5 w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2 transition-colors cursor-pointer" type="checkbox"/>
+                        <span class="text-sm text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
+                            I confirm I am an authorized representative of this facility and agree to the <a class="text-primary hover:text-red-800 font-semibold transition-colors" href="#">Data Sharing Agreement</a> and <a class="text-primary hover:text-red-800 font-semibold transition-colors" href="#">Terms of Service</a>.
+                        </span>
+                    </label>
+                </div>
+
+                <button class="w-full bg-primary text-white font-semibold py-3 rounded-xl shadow-[0_4px_14px_0_rgba(183,19,26,0.39)] hover:bg-red-800 transition-all duration-200 active:scale-[0.98] text-sm flex justify-center items-center gap-2" type="submit">
+                    <span>Submit Registration</span>
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </button>
+            </form>
+
+            <!-- Frontend Password Validation Script -->
+            <script>
+                document.getElementById('registrationForm').addEventListener('submit', function(event) {
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    const errorMsg = document.getElementById('passwordMismatchError');
+                    const confirmInput = document.getElementById('confirmPassword');
+
+                    if (password !== confirmPassword) {
+                        event.preventDefault();
+                        errorMsg.classList.remove('hidden');
+                        confirmInput.style.borderColor = '#dc2626'; // Tailwind red-600
+                        confirmInput.style.boxShadow = '0 0 0 2px rgba(220, 38, 38, 0.1)';
+                    } else {
+                        errorMsg.classList.add('hidden');
+                        confirmInput.style.borderColor = '';
+                        confirmInput.style.boxShadow = '';
+                    }
+                });
+            </script>
+
+            <!-- Login Link -->
+            <p class="text-center text-sm text-gray-500 pt-6">
+                Already registered? <a class="font-semibold text-primary hover:text-red-800 transition-colors" th:href="@{/hospital/login}">Sign in to the portal</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Right Side: Clinical Branding -->
+    <div class="hidden md:flex md:w-[45%] lg:w-[50%] relative overflow-hidden items-end justify-start p-12 h-full bg-gray-900">
+        <!-- Background Image -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=2000&auto=format&fit=crop');"></div>
+        <!-- Premium Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-gray-900/50 to-transparent"></div>
+
+        <div class="relative z-10 w-full text-left flex flex-col gap-4 max-w-lg mb-8">
+            <div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 mb-2">
+                <span class="material-symbols-outlined text-white text-[32px] icon-filled">hub</span>
+            </div>
+            <h2 class="text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">Network <br/> Integration</h2>
+            <p class="text-base text-gray-300 leading-relaxed mt-2">
+                Connecting your facility directly to regional blood banks ensures immediate access to life-saving inventory during critical emergencies.
+            </p>
+
+            <div class="mt-6 space-y-4 text-gray-300 text-sm">
+                <div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
+                    <span class="material-symbols-outlined text-red-400 icon-filled">check_circle</span>
+                    <span class="font-medium text-white">Real-time inventory tracking</span>
+                </div>
+                <div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
+                    <span class="material-symbols-outlined text-red-400 icon-filled">check_circle</span>
+                    <span class="font-medium text-white">Automated STAT request routing</span>
+                </div>
+                <div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
+                    <span class="material-symbols-outlined text-red-400 icon-filled">check_circle</span>
+                    <span class="font-medium text-white">EHR / EMR System integration ready</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

@@ -133,7 +133,7 @@
             </div>
         </header>
 
-        <!-- Stock Summary Cards (8 Blood Groups) -->
+        <!-- Stock Summary Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 mb-8">
             <div class="card-elevation bg-white p-5 rounded-2xl flex flex-col items-center justify-center transition-transform hover:-translate-y-1">
                 <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">A+ Group</span>
@@ -223,7 +223,7 @@
                         </td>
 
                         <td class="px-6 py-4 text-center">
-                            <form th:action="@{/admin/inventory/delete/{id}(id=${bag.bagId})}" method="POST" onsubmit="return confirm('Are you sure you want to remove this bag?');">
+                            <form th:action="@{/admin/inventory/delete/{id}(id=${bag.bagId})}" method="POST" data-confirm="This blood bag will be removed from the inventory. This action cannot be undone." data-confirm-title="Remove blood bag?" data-confirm-btn="Yes, Remove" data-confirm-icon="delete">
                                 <button type="submit" class="text-gray-400 hover:text-red-600 bg-white hover:bg-red-50 p-2 rounded-lg transition-colors border border-transparent hover:border-red-100 shadow-sm flex mx-auto" title="Remove Bag">
                                     <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
@@ -249,8 +249,6 @@
     </main>
 </div>
 
-<!-- ADMIN MOBILE NAVIGATION -->
-<nav th:replace="~{admin/fragments/sidebar :: mobile-nav}"></nav>
 
 <!-- ========================================== -->
 <!-- ADD BLOOD BAG MODAL POP-UP                 -->
@@ -278,12 +276,12 @@
         <form th:action="@{/admin/inventory/add}" method="POST" class="space-y-5">
             <div>
                 <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Donor ID</label>
-                <input type="number" class="input-field font-medium text-gray-900" placeholder="e.g. 1" name="donorId" required>
+                <input type="number" class="input-field font-medium text-gray-900" placeholder="e.g. 1" name="donorId">
             </div>
 
             <div>
                 <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Blood Group</label>
-                <select class="input-field font-bold text-gray-900" name="bloodGroup" required>
+                <select class="input-field font-bold text-gray-900" name="bloodGroup">
                     <option value="" disabled selected>Select Group...</option>
                     <option value="O-">O Negative</option>
                     <option value="O+">O Positive</option>
@@ -299,12 +297,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Collection Date</label>
-                    <input type="date" class="input-field font-medium text-gray-900" name="collectionDate" id="collectionDate" required>
+                    <input type="date" class="input-field font-medium text-gray-900" name="collectionDate" id="collectionDate">
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Expiry Date</label>
-                    <input type="date" class="input-field font-medium text-gray-900" name="expiryDate" id="expiryDate" required>
+                    <input type="date" class="input-field font-medium text-gray-900" name="expiryDate" id="expiryDate">
                 </div>
             </div>
 
@@ -330,23 +328,32 @@
         }
     }
 
-    function openAddModal() {
-        document.getElementById('addModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-
-        document.getElementById('collectionDate').valueAsDate = new Date();
-
-        const expiry = new Date();
-        expiry.setDate(expiry.getDate() + 42);
-        document.getElementById('expiryDate').valueAsDate = expiry;
-    }
-
-    function closeAddModal() {
-        document.getElementById('addModal').classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-
+    // Set Date Restrictions on Page Load
     document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const todayStr = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+        const collectionDateInput = document.getElementById('collectionDate');
+        const expiryDateInput = document.getElementById('expiryDate');
+
+        // Prevent selecting past dates for both inputs
+        collectionDateInput.setAttribute('min', todayStr);
+        expiryDateInput.setAttribute('min', todayStr);
+
+        // Auto-update Expiry Date when Collection Date changes (adds 42 days)
+        collectionDateInput.addEventListener('change', function() {
+            const selectedCollDate = new Date(this.value);
+
+            // Set expiry date to +42 days
+            const newExpiry = new Date(selectedCollDate);
+            newExpiry.setDate(newExpiry.getDate() + 42);
+            expiryDateInput.valueAsDate = newExpiry;
+
+            // Ensure Expiry date min value is at least the collection date
+            expiryDateInput.setAttribute('min', this.value);
+        });
+
+        // Toast disappear logic
         const toasts = document.querySelectorAll('.toast-message');
         toasts.forEach(toast => {
             setTimeout(() => {
@@ -357,6 +364,157 @@
             }, 5000);
         });
     });
+
+    function openAddModal() {
+        document.getElementById('addModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        // Pre-fill Today for Collection Date
+        document.getElementById('collectionDate').valueAsDate = new Date();
+
+        // Pre-fill Today + 42 days for Expiry
+        const expiry = new Date();
+        expiry.setDate(expiry.getDate() + 42);
+        document.getElementById('expiryDate').valueAsDate = expiry;
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
 </script>
+<!-- ===== Confirmation modal (replaces native confirm()) =====
+     Any <form> with data-confirm="..." opens this instead of the browser popup.
+     Optional: data-confirm-title, data-confirm-btn, data-confirm-icon ===== -->
+<style>
+    @keyframes cfmFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes cfmPop  { from { opacity: 0; transform: scale(0.95) translateY(10px); }
+                         to   { opacity: 1; transform: scale(1)    translateY(0); } }
+    #confirmModal:not(.hidden) .cfm-backdrop { animation: cfmFade 0.2s ease-out forwards; }
+    #confirmModal:not(.hidden) .cfm-card     { animation: cfmPop 0.22s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+</style>
+
+<div id="confirmModal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4"
+     role="alertdialog" aria-modal="true"
+     aria-labelledby="confirmModalTitle" aria-describedby="confirmModalMessage">
+
+    <!-- Backdrop -->
+    <div class="cfm-backdrop absolute inset-0 bg-gray-900/40 backdrop-blur-sm" data-confirm-cancel></div>
+
+    <!-- Card -->
+    <div class="cfm-card relative bg-white border border-gray-100 w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 text-center">
+
+        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center text-red-600 mx-auto ring-8 ring-red-50/50">
+            <span id="confirmModalIcon" class="material-symbols-outlined text-[32px]">warning</span>
+        </div>
+
+        <div>
+            <h2 id="confirmModalTitle" class="text-xl font-bold text-gray-900 mb-2">Are you sure?</h2>
+            <p id="confirmModalMessage" class="text-sm text-gray-500 font-medium">This action cannot be undone.</p>
+        </div>
+
+        <div class="flex flex-col-reverse sm:flex-row justify-center gap-3 pt-2">
+            <button type="button" id="confirmModalCancel" data-confirm-cancel
+                    class="w-full sm:w-auto px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300">
+                Cancel
+            </button>
+            <button type="button" id="confirmModalOk"
+                    class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 shadow-md text-sm transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-300">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var modal = document.getElementById('confirmModal');
+        if (!modal) return;
+
+        var titleEl  = document.getElementById('confirmModalTitle');
+        var msgEl    = document.getElementById('confirmModalMessage');
+        var iconEl   = document.getElementById('confirmModalIcon');
+        var okBtn    = document.getElementById('confirmModalOk');
+        var cancelBtn = document.getElementById('confirmModalCancel');
+
+        var pending = null;      // { form, submitter }
+        var lastFocused = null;
+
+        function openConfirm(form, submitter) {
+            pending = { form: form, submitter: submitter || null };
+            lastFocused = document.activeElement;
+
+            titleEl.textContent = form.getAttribute('data-confirm-title') || 'Are you sure?';
+            msgEl.textContent   = form.getAttribute('data-confirm') || 'This action cannot be undone.';
+            iconEl.textContent  = form.getAttribute('data-confirm-icon') || 'warning';
+            okBtn.textContent   = form.getAttribute('data-confirm-btn') || 'Confirm';
+            okBtn.disabled = false;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            cancelBtn.focus();   // safest default focus for destructive actions
+        }
+
+        function closeConfirm() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            pending = null;
+            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+        }
+
+        // Intercept every form that carries data-confirm
+        document.addEventListener('submit', function (e) {
+            var form = e.target;
+            if (!form || !form.hasAttribute || !form.hasAttribute('data-confirm')) return;
+
+            // Second pass (user already confirmed) -> let the browser submit normally
+            if (form.getAttribute('data-confirmed') === 'true') {
+                form.removeAttribute('data-confirmed');
+                return;
+            }
+
+            e.preventDefault();
+            openConfirm(form, e.submitter);
+        }, true);
+
+        okBtn.addEventListener('click', function () {
+            if (!pending) return;
+            var form = pending.form;
+            var submitter = pending.submitter;
+
+            okBtn.disabled = true;               // stop double clicks
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            pending = null;
+
+            form.setAttribute('data-confirmed', 'true');
+            if (typeof form.requestSubmit === 'function') {
+                try { form.requestSubmit(submitter || undefined); }
+                catch (err) { form.submit(); }
+            } else {
+                form.submit();
+            }
+        });
+
+        modal.querySelectorAll('[data-confirm-cancel]').forEach(function (el) {
+            el.addEventListener('click', closeConfirm);
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (modal.classList.contains('hidden')) return;
+
+            if (e.key === 'Escape') { e.preventDefault(); closeConfirm(); return; }
+
+            // Keep Tab focus inside the dialog
+            if (e.key === 'Tab') {
+                var focusables = [cancelBtn, okBtn];
+                var first = focusables[0], last = focusables[focusables.length - 1];
+                if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
+        });
+    })();
+</script>
+
 </body>
 </html>

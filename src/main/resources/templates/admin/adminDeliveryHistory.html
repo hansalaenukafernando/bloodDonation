@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Delivery History | LifeStream Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        "primary": "#b7131a",
+                        "background": "#f9fafb",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }
+
+        /* Premium Shadow and Borders */
+        .card-elevation {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #F3F4F6;
+        }
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+    </style>
+</head>
+<body class="bg-background text-gray-900 overflow-x-hidden relative antialiased selection:bg-red-100 selection:text-primary">
+
+<!-- Top Navigation Bar -->
+<header class="bg-white sticky top-0 z-40 border-b border-gray-100">
+    <div class="flex justify-between items-center px-6 py-4 w-full">
+        <div class="text-xl font-bold text-primary flex items-center gap-2 tracking-tight">
+            <span class="material-symbols-outlined text-[26px] text-primary icon-filled">admin_panel_settings</span>
+            LifeStream <span class="font-medium text-gray-800">Admin <span class="text-gray-300 font-light ml-2 mr-2">|</span> System Console</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex flex-col text-right hidden sm:block">
+                <span class="text-sm font-semibold text-gray-900 block leading-tight">Administrator</span>
+                <span class="text-xs text-gray-500 font-medium tracking-wide">System Management</span>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-red-50 text-primary flex items-center justify-center font-bold border border-red-100 shadow-sm ring-2 ring-white">AD</div>
+        </div>
+    </div>
+</header>
+
+<div class="flex w-full min-h-[calc(100vh-73px)] relative z-0">
+
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/fragments/sidebar :: desktop-sidebar}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
+
+        <!-- Page Header -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-5">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Completed Blood Deliveries History</h1>
+                <p class="text-gray-500 text-sm mt-1">Archived logs of hospital blood requests that were delivered or rejected.</p>
+            </div>
+            <a th:href="@{/admin/deliveries}" class="bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition-all flex items-center gap-2 text-sm shadow-sm active:scale-95">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back to Active Deliveries
+            </a>
+        </header>
+
+        <!-- Delivery History Table Section -->
+        <div class="card-elevation bg-white rounded-2xl overflow-hidden mb-6">
+
+            <!-- Section Header & Search -->
+            <div class="p-5 bg-white border-b border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <h3 class="font-bold text-gray-900 text-base flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-emerald-600 icon-filled text-[20px]">task_alt</span> Finalized Dispatches Log
+                </h3>
+                <div class="relative w-full md:w-80">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+                    <input type="text" oninput="filterTable(this, 'deliveryHistoryTableBody')" placeholder="Search by hospital, patient, driver..." class="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm shadow-sm transition-all text-gray-700">
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead class="bg-gray-50/50 text-xs uppercase text-gray-500 border-b border-gray-100">
+                    <tr>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Req ID</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Hospital Name</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Patient Details</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider text-center">Blood Group</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider text-center">Quantity</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Assigned Driver</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Cool Box Used</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="deliveryHistoryTableBody" class="divide-y divide-gray-100 text-sm">
+                    <tr th:each="hist : ${deliveryHistory}" class="hover:bg-gray-50/50 transition-colors group">
+
+                        <td class="px-6 py-4 font-mono font-medium text-gray-500" th:text="${'REQ-' + hist.requestId}">REQ-01</td>
+
+                        <td class="px-6 py-4 font-semibold text-gray-900" th:text="${hist.hospital != null ? hist.hospital.name : 'Hospital'}">General Hospital</td>
+
+                        <td class="px-6 py-4">
+                            <span class="font-semibold text-gray-900 block" th:text="${hist.patientName}">John Doe</span>
+                            <span class="text-xs text-gray-500 mt-0.5 block" th:text="${hist.ward}">ICU</span>
+                        </td>
+
+                        <td class="px-6 py-4 text-center">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-primary font-bold text-xs ring-1 ring-red-100" th:text="${hist.bloodGroup}">O+</span>
+                        </td>
+
+                        <td class="px-6 py-4 text-center font-medium text-gray-900" th:text="${hist.quantity + ' Units'}">2 Units</td>
+
+                        <td class="px-6 py-4 text-gray-700 font-medium" th:text="${hist.driver != null ? hist.driver.name : 'N/A'}">Driver Name</td>
+
+                        <td class="px-6 py-4 font-mono font-semibold text-gray-700" th:text="${hist.coolBox != null ? hist.coolBox.boxCode : 'N/A'}">Box Code</td>
+
+                        <td class="px-6 py-4">
+                            <!-- Premium Status Badge -->
+                            <span class="px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide inline-flex items-center gap-1.5"
+                                  th:classappend="${hist.status == 'Rejected'} ? 'bg-red-50 text-red-700 ring-1 ring-red-600/20' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'">
+                                <span class="w-1.5 h-1.5 rounded-full" th:classappend="${hist.status == 'Rejected'} ? 'bg-red-500' : 'bg-emerald-500'"></span>
+                                <span th:text="${hist.status}">Delivered</span>
+                            </span>
+                        </td>
+                    </tr>
+
+                    <!-- Empty State -->
+                    <tr th:if="${#lists.isEmpty(deliveryHistory)}">
+                        <td colspan="8" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">history_toggle_off</span>
+                                <p class="font-medium text-gray-900">No completed delivery history records found</p>
+                                <p class="text-xs mt-1">Delivered or rejected hospital blood orders will be archived here.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    // Simple client-side row search/filter
+    function filterTable(input, tbodyId) {
+        const filter = input.value.toLowerCase();
+        const rows = document.getElementById(tbodyId).getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            if(rows[i].querySelector('td[colspan]')) continue;
+            const text = rows[i].textContent.toLowerCase();
+            rows[i].style.display = text.includes(filter) ? '' : 'none';
+        }
+    }
+</script>
+</body>
+</html>
