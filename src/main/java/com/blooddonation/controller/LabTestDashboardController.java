@@ -1,5 +1,6 @@
 package com.blooddonation.controller;
 
+import com.blooddonation.util.Validate;
 import com.blooddonation.entity.BloodBag;
 import com.blooddonation.entity.LabTester;
 import com.blooddonation.service.LabTestDashboardService;
@@ -69,6 +70,18 @@ public class LabTestDashboardController {
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
         if (session.getAttribute("labtester") == null) return "redirect:/labtest/login";
+
+        String error = Validate.first(
+                Validate.required("Blood bag", bagId),
+                Validate.oneOf("HIV result", hiv, "Negative", "Positive"),
+                Validate.oneOf("Hepatitis result", hepatitis, "Negative", "Positive"),
+                Validate.oneOf("Syphilis result", syphilis, "Negative", "Positive"),
+                Validate.oneOf("Test outcome", testOutcome, "Pass", "Fail")
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/labtest/pending";
+        }
 
         try {
             labTestOperationsService.submitTestResults(bagId, hiv, hepatitis, syphilis, testOutcome);

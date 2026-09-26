@@ -1,5 +1,6 @@
 package com.blooddonation.controller;
 
+import com.blooddonation.util.Validate;
 import com.blooddonation.entity.LabTester;
 import com.blooddonation.service.LabTestAuthService;
 import jakarta.servlet.http.HttpSession;
@@ -40,6 +41,15 @@ public class LabTestProfileController {
         LabTester tester = (LabTester) session.getAttribute("labtester");
         if (tester == null) return "redirect:/labtest/login";
 
+        String error = Validate.first(
+                Validate.name("Full name", name),
+                Validate.email("Email", email)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/labtest/profile";
+        }
+
         try {
             LabTester updatedTester = labTestAuthService.updateProfile(tester.getTesterId(), name, email);
             session.setAttribute("labtester", updatedTester);
@@ -57,6 +67,15 @@ public class LabTestProfileController {
                                  RedirectAttributes redirectAttributes) {
         LabTester tester = (LabTester) session.getAttribute("labtester");
         if (tester == null) return "redirect:/labtest/login";
+
+        String error = Validate.first(
+                Validate.required("Current password", currentPassword),
+                Validate.password("New password", newPassword)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/labtest/profile";
+        }
 
         try {
             labTestAuthService.updatePassword(tester.getTesterId(), currentPassword, newPassword);

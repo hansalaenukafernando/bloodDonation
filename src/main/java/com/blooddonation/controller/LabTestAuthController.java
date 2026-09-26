@@ -1,5 +1,6 @@
 package com.blooddonation.controller;
 
+import com.blooddonation.util.Validate;
 import com.blooddonation.entity.LabTester;
 import com.blooddonation.service.LabTestAuthService;
 import jakarta.servlet.http.HttpSession;
@@ -40,6 +41,16 @@ public class LabTestAuthController {
             @RequestParam("password") String password,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
+
+        String error = Validate.first(
+                Validate.required("Email", email),
+                Validate.required("Password", password)
+        );
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", error);
+            return "redirect:/labtest/login";
+        }
+
         try {
             LabTester loggedInTester = labTestAuthService.authenticateLabTester(email, password);
             session.setAttribute("labtester", loggedInTester);

@@ -130,11 +130,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Full Name</label>
-              <input class="input-field font-medium text-gray-900" type="text" name="name" th:value="${tester.name}" required/>
+              <input class="input-field font-medium text-gray-900" type="text" name="name" th:value="${tester.name}"/>
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Email Address</label>
-              <input class="input-field font-medium text-gray-900" type="email" name="email" th:value="${tester.email}" required/>
+              <input class="input-field font-medium text-gray-900" type="text" name="email" th:value="${tester.email}"/>
             </div>
           </div>
 
@@ -157,11 +157,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
             <div>
               <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Current Password</label>
-              <input class="input-field" type="password" name="currentPassword" placeholder="••••••••" required/>
+              <input class="input-field" type="password" name="currentPassword" placeholder="••••••••"/>
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">New Password</label>
-              <input class="input-field" type="password" name="newPassword" placeholder="••••••••" required minlength="6"/>
+              <input class="input-field" type="password" name="newPassword" placeholder="••••••••" minlength="6"/>
             </div>
 
             <div class="md:col-span-2 flex justify-end pt-4 border-t border-gray-100 mt-2">
@@ -175,7 +175,6 @@
   </main>
 </div>
 
-<nav th:replace="~{labtest/fragments/sidebar :: mobile-nav}"></nav>
 <div th:replace="~{labtest/fragments/sidebar :: nav-active-script}"></div>
 
 <script>

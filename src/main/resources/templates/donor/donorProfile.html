@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Donor Profile Settings | LifeStream</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        "primary": "#b7131a",
+                        "background": "#f9fafb",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }
+
+        /* Premium Shadow and Borders */
+        .card-elevation {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #F3F4F6;
+        }
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast-slide-in { animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+        /* Premium Input Fields */
+        .input-field {
+            width: 100%;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            padding: 0.625rem 0.875rem;
+            background-color: #ffffff;
+            outline: none;
+            font-size: 0.875rem;
+            color: #111827;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            margin-top: 0.35rem;
+        }
+        .input-field:focus {
+            border-color: #b7131a;
+            box-shadow: 0 0 0 2px rgba(183, 19, 26, 0.1);
+        }
+        .input-field:disabled {
+            background-color: #F9FAFB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+        .field-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body class="bg-background text-gray-900 overflow-x-hidden relative antialiased selection:bg-red-100 selection:text-primary">
+
+<!-- Toast Notifications -->
+<div id="toast-container" class="fixed top-6 right-6 z-[200] flex flex-col gap-3">
+    <div th:if="${successMessage}" class="toast-message toast-slide-in bg-white border-l-4 border-emerald-500 p-4 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-between w-80">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-500 icon-filled">check_circle</span>
+            <span th:text="${successMessage}" class="text-sm font-medium text-gray-800"></span>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 transition-colors">&times;</button>
+    </div>
+    <div th:if="${errorMessage}" class="toast-message toast-slide-in bg-white border-l-4 border-red-500 p-4 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-between w-80">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-red-500 icon-filled">error</span>
+            <span th:text="${errorMessage}" class="text-sm font-medium text-gray-800"></span>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 transition-colors">&times;</button>
+    </div>
+</div>
+
+<!-- Top Navigation Bar -->
+<header class="bg-white sticky top-0 z-40 border-b border-gray-100">
+    <div class="flex justify-between items-center px-6 py-4 w-full">
+        <div class="text-xl font-bold text-primary flex items-center gap-2 tracking-tight">
+            <span class="material-symbols-outlined text-[26px] text-primary icon-filled">water_drop</span>
+            LifeStream <span class="font-medium text-gray-800">Donor</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex flex-col text-right hidden sm:block">
+                <span class="text-sm font-semibold text-gray-900 block leading-tight" th:text="${donor.name}">Donor Name</span>
+                <span class="text-xs text-gray-500 font-medium tracking-wide">Blood Group: <span class="font-bold text-primary" th:text="${donor.bloodGroup}">O+</span></span>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-red-50 text-primary flex items-center justify-center font-bold border border-red-100 shadow-sm ring-2 ring-white"
+                 th:text="${#strings.substring(donor.name, 0, 2)}">DO</div>
+        </div>
+    </div>
+</header>
+
+<div class="flex w-full min-h-[calc(100vh-73px)] relative z-0">
+    <!-- Sidebar -->
+    <aside th:replace="~{donor/fragments/sidebar :: desktop-sidebar}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto pb-10">
+
+        <!-- Page Header -->
+        <header class="mb-8 border-b border-gray-200 pb-5">
+            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Account</p>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Profile Settings</h1>
+            <p class="text-gray-500 text-sm mt-1">Manage your personal information and account security.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Left Column: Personal Info & Security -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+
+                <!-- Personal Information Form -->
+                <section class="card-elevation bg-white rounded-2xl p-6 lg:p-8">
+                    <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+                        <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-primary border border-red-100">
+                            <span class="material-symbols-outlined icon-filled text-[20px]">badge</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">Personal Information</h3>
+                    </div>
+
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-6" method="POST" th:action="@{/donor/profile/update}">
+                        <div class="flex flex-col">
+                            <label class="field-label">Full Name</label>
+                            <input class="input-field font-medium" type="text" name="name" th:value="${donor.name}"/>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="field-label">NIC Number <span class="normal-case font-sans font-normal text-gray-400 text-xs">(cannot be changed)</span></label>
+                            <input class="input-field font-medium" type="text" th:value="${donor.nic}" disabled readonly/>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="field-label">Email Address</label>
+                            <input class="input-field font-medium" type="text" name="email" th:value="${donor.email}"/>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="field-label">Phone Number</label>
+                            <input class="input-field font-medium" type="tel" name="contactNumber" th:value="${donor.contactNumber}"/>
+                        </div>
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="field-label">Mailing Address</label>
+                            <textarea class="input-field font-medium min-h-[90px] resize-y" name="address" th:text="${donor.address}"></textarea>
+                        </div>
+                        <div class="md:col-span-2 flex justify-end pt-2">
+                            <button type="submit" class="px-6 py-2.5 rounded-lg bg-primary text-white font-semibold hover:bg-red-800 shadow-[0_4px_14px_0_rgba(183,19,26,0.39)] text-sm transition-all active:scale-95">
+                                Save Profile Changes
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Account Security (Password Update) -->
+                <section class="card-elevation bg-white rounded-2xl p-6 lg:p-8">
+                    <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+                        <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-primary border border-red-100">
+                            <span class="material-symbols-outlined icon-filled text-[20px]">security</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">Change Password</h3>
+                    </div>
+
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end" method="POST" th:action="@{/donor/profile/update-password}">
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="field-label">Current Password</label>
+                            <input class="input-field" type="password" name="currentPassword" placeholder="••••••••"/>
+                        </div>
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="field-label">New Password</label>
+                            <input class="input-field" type="password" name="newPassword" placeholder="••••••••" minlength="6"/>
+                        </div>
+                        <div class="flex flex-col md:col-span-2 items-end justify-end pt-2">
+                            <button type="submit" class="px-6 py-2.5 rounded-lg bg-gray-900 text-white font-semibold hover:bg-gray-800 shadow-md text-sm transition-all active:scale-95">
+                                Update Password
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Right Column: Medical & Blood Info -->
+            <div class="lg:col-span-4 flex flex-col gap-6">
+                <section class="card-elevation bg-white rounded-2xl p-6 text-center">
+                    <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4 text-left">
+                        <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-primary border border-red-100">
+                            <span class="material-symbols-outlined icon-filled text-[20px]">medical_services</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">Medical Profile</h3>
+                    </div>
+
+                    <div class="bg-red-50/50 border border-red-100 p-6 rounded-2xl my-2">
+                        <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Blood Type</p>
+                        <p class="text-5xl font-bold text-primary my-3" th:text="${donor.bloodGroup}">O+</p>
+                        <p class="text-xs font-semibold text-emerald-600 bg-emerald-50 py-1 px-3 rounded-full inline-block">Registered Medical Profile</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4 leading-relaxed">If you need to update your blood type or medical records, please visit a LifeStream center in person.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{donor/fragments/sidebar :: nav-active-script}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toasts = document.querySelectorAll('.toast-message');
+        toasts.forEach(toast => {
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+        });
+    });
+</script>
+</body>
+</html>

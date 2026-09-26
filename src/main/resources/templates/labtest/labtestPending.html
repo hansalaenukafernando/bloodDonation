@@ -213,7 +213,7 @@
       <div class="grid grid-cols-1 gap-5">
         <div>
           <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">HIV Test Result</label>
-          <select name="hiv" class="input-field font-semibold text-gray-900" required>
+          <select name="hiv" class="input-field font-semibold text-gray-900">
             <option value="Negative">Negative (Safe)</option>
             <option value="Positive">Positive (Infected)</option>
           </select>
@@ -221,7 +221,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Hepatitis B & C Screening</label>
-          <select name="hepatitis" class="input-field font-semibold text-gray-900" required>
+          <select name="hepatitis" class="input-field font-semibold text-gray-900">
             <option value="Negative">Negative (Safe)</option>
             <option value="Positive">Positive (Infected)</option>
           </select>
@@ -229,7 +229,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Syphilis Test Result</label>
-          <select name="syphilis" class="input-field font-semibold text-gray-900" required>
+          <select name="syphilis" class="input-field font-semibold text-gray-900">
             <option value="Negative">Negative (Safe)</option>
             <option value="Positive">Positive (Infected)</option>
           </select>
@@ -239,7 +239,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Final Clinical Verdict (Status)</label>
-          <select name="testOutcome" class="input-field font-bold text-primary" required>
+          <select name="testOutcome" class="input-field font-bold text-primary">
             <option value="Pass">Pass - Test OK (Add to Inventory)</option>
             <option value="Fail">Fail - Contaminated (Discard Unit)</option>
           </select>
@@ -256,7 +256,6 @@
   </div>
 </div>
 
-<nav th:replace="~{labtest/fragments/sidebar :: mobile-nav}"></nav>
 <div th:replace="~{labtest/fragments/sidebar :: nav-active-script}"></div>
 
 <script>

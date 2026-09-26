@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>LifeStream - Donor Registration</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container": "#eeeeee",
+            "surface-container-highest": "#e2e2e2",
+            "inverse-on-surface": "#f0f1f1",
+            "secondary": "#506169",
+            "on-background": "#1a1c1c",
+            "on-tertiary-container": "#fefcff",
+            "on-secondary-container": "#55656d",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#0d1e25",
+            "error": "#ba1a1a",
+            "on-primary-fixed-variant": "#93000d",
+            "error-container": "#ffdad6",
+            "outline": "#906f6c",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#2f3131",
+            "primary-fixed": "#ffdad6",
+            "surface-variant": "#e2e2e2",
+            "surface-tint": "#bb171c",
+            "surface-dim": "#dadada",
+            "tertiary": "#005cab",
+            "on-secondary": "#ffffff",
+            "surface": "#f9f9f9",
+            "on-primary-container": "#fffbff",
+            "secondary-fixed-dim": "#b8c9d3",
+            "surface-container-high": "#e8e8e8",
+            "primary-fixed-dim": "#ffb4ac",
+            "tertiary-fixed-dim": "#a5c8ff",
+            "surface-container-low": "#f3f3f3",
+            "on-tertiary-fixed-variant": "#004786",
+            "on-tertiary-fixed": "#001c3a",
+            "tertiary-fixed": "#d4e3ff",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#b7131a",
+            "on-surface": "#1a1c1c",
+            "tertiary-container": "#1775d1",
+            "surface-bright": "#f9f9f9",
+            "outline-variant": "#e4beb9",
+            "on-surface-variant": "#5b403d",
+            "on-primary-fixed": "#410002",
+            "secondary-fixed": "#d4e5ef",
+            "on-error": "#ffffff",
+            "secondary-container": "#d1e2ec",
+            "inverse-primary": "#ffb4ac",
+            "on-secondary-fixed-variant": "#394951",
+            "primary-container": "#db322f",
+            "on-tertiary": "#ffffff",
+            "background": "#f9f9f9"
+          },
+          "fontFamily": {
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-sm": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .input-field {
+      @apply w-full border border-surface-container-highest rounded-lg px-4 py-3 bg-white focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary transition-colors font-body-md text-on-surface;
+    }
+    .input-label {
+      @apply block mb-1 text-sm font-medium text-on-surface-variant;
+    }
+
+    /* Toast Notification Animation */
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .toast-slide-in {
+      animation: slideIn 0.3s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md relative">
+
+<!-- Toast Notification Container (Top Right) -->
+<div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2">
+  <!-- Success Toast -->
+  <div th:if="${successMessage}" class="toast-message toast-slide-in bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-center justify-between w-80" role="alert">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-green-600">check_circle</span>
+      <span th:text="${successMessage}" class="text-sm font-medium"></span>
+    </div>
+    <button onclick="this.parentElement.remove()" class="text-green-700 hover:text-green-900 font-bold ml-4">&times;</button>
+  </div>
+
+  <!-- Error Toast -->
+  <div th:if="${errorMessage}" class="toast-message toast-slide-in bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-center justify-between w-80" role="alert">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-red-600">error</span>
+      <span th:text="${errorMessage}" class="text-sm font-medium"></span>
+    </div>
+    <button onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-900 font-bold ml-4">&times;</button>
+  </div>
+</div>
+
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-background docked full-width top-0 border-b border-outline-variant dark:border-outline flat no shadows z-50">
+  <div class="flex justify-between items-center w-full px-6 md:px-10 max-w-7xl mx-auto h-16">
+    <div class="flex items-center gap-6">
+      <div class="text-xl font-bold text-primary dark:text-primary-fixed">
+        LifeStream
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="text-sm font-medium text-primary dark:text-primary-fixed hover:bg-surface-container dark:hover:bg-surface-variant transition-all px-4 py-2 rounded-lg">Sign In</button>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow py-16 px-6 md:px-10 max-w-7xl mx-auto w-full flex justify-center items-center">
+  <div class="w-full max-w-4xl bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container-highest overflow-hidden grid grid-cols-1 md:grid-cols-5">
+    <!-- Context Side -->
+    <div class="hidden md:flex md:col-span-2 bg-surface-container-low p-10 flex-col justify-between border-r border-surface-container-highest relative overflow-hidden">
+      <div class="relative z-10">
+        <h2 class="text-2xl font-bold text-primary mb-3">Join the Registry</h2>
+        <p class="text-base text-on-surface-variant">Your registration is the first step towards making a life-saving impact in your community.</p>
+      </div>
+      <div class="relative z-10 mt-16">
+        <div class="flex items-start gap-3 mb-6">
+          <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">health_and_safety</span>
+          <div>
+            <h4 class="text-sm font-medium text-on-surface">Secure &amp; Confidential</h4>
+            <p class="text-sm text-on-surface-variant">Your medical data is encrypted and handled with the highest clinical standards.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+          <div>
+            <h4 class="text-sm font-medium text-on-surface">Immediate Impact</h4>
+            <p class="text-sm text-on-surface-variant">Once registered, you can schedule your first donation right away.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Side -->
+    <div class="md:col-span-3 p-10">
+      <div class="mb-10">
+        <h1 class="text-2xl font-bold text-on-surface mb-2">Donor Registration</h1>
+        <p class="text-sm text-on-surface-variant">Please provide your details accurately to set up your clinical profile.</p>
+      </div>
+
+      <!-- Registration Form -->
+      <form class="space-y-6" th:action="@{/donor/register}" method="POST" onsubmit="return validateForm(event)">
+
+        <!-- Personal Details -->
+        <div class="space-y-6">
+          <h3 class="text-sm font-medium text-secondary border-b border-surface-container-highest pb-2">Personal Details</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="input-label" for="name">Full Name</label>
+              <input class="input-field" id="name" name="name" placeholder="John Doe" type="text"/>
+            </div>
+            <div>
+              <label class="input-label" for="nic">NIC Number</label>
+              <input class="input-field" id="nic" name="nic" placeholder="e.g., 199912345678 or 991234567V" type="text"/>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="input-label" for="email">Email Address</label>
+              <input class="input-field" id="email" name="email" placeholder="name@example.com" type="text"/>
+            </div>
+            <div>
+              <label class="input-label" for="contactNumber">Phone Number</label>
+              <input class="input-field" id="contactNumber" name="contactNumber" placeholder="07XXXXXXXX" type="tel"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical Baseline & Address -->
+        <div class="space-y-6 mt-10">
+          <h3 class="text-sm font-medium text-secondary border-b border-surface-container-highest pb-2">Medical Baseline & Contact Info</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="input-label" for="bloodGroup">Blood Type</label>
+              <select class="input-field appearance-none" id="bloodGroup" name="bloodGroup">
+                <option disabled="" selected="" value="">Select type</option>
+                <option value="O+">O Positive (O+)</option>
+                <option value="O-">O Negative (O-)</option>
+                <option value="A+">A Positive (A+)</option>
+                <option value="A-">A Negative (A-)</option>
+                <option value="B+">B Positive (B+)</option>
+                <option value="B-">B Negative (B-)</option>
+                <option value="AB+">AB Positive (AB+)</option>
+                <option value="AB-">AB Negative (AB-)</option>
+              </select>
+            </div>
+            <div>
+              <label class="input-label" for="address">Residential Address</label>
+              <input class="input-field" id="address" name="address" placeholder="123 Main St, City" type="text"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="space-y-6 mt-10">
+          <h3 class="text-sm font-medium text-secondary border-b border-surface-container-highest pb-2">Account Security</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="input-label" for="password">Password</label>
+              <input class="input-field" id="password" name="password" placeholder="Create a password" type="password" minlength="6"/>
+            </div>
+            <div>
+              <label class="input-label" for="confirmPassword">Confirm Password</label>
+              <input class="input-field" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" type="password"/>
+              <!-- Validation error message container -->
+              <p id="password-error" class="text-red-500 text-xs mt-1 hidden">Passwords do not match!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agreements -->
+        <div class="mt-10 pt-4">
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input class="mt-1 w-4 h-4 text-primary bg-white border-surface-container-highest rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+            <span class="text-sm text-on-surface-variant">
+              I verify that the information provided is accurate and I agree to the LifeStream <a class="text-tertiary hover:underline" href="#">Terms of Service</a> and <a class="text-tertiary hover:underline" href="#">Privacy Policy</a> regarding medical data handling.
+            </span>
+          </label>
+        </div>
+
+        <!-- Action -->
+        <div class="mt-16 pt-6 border-t border-surface-container-highest flex justify-end gap-6">
+          <button type="reset" class="text-sm font-medium px-8 py-3 rounded-lg text-secondary border border-surface-container-highest hover:bg-surface-container-low transition-colors">
+            Clear Form
+          </button>
+          <button class="text-sm font-medium px-8 py-3 rounded-lg bg-primary text-white hover:bg-surface-tint transition-colors shadow-sm flex items-center gap-2" type="submit">
+            Create Account
+            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script>
+  // 1. Toast Notification Auto-Dismiss (5 Seconds)
+  document.addEventListener('DOMContentLoaded', function() {
+    const toasts = document.querySelectorAll('.toast-message');
+    toasts.forEach(toast => {
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 500); // Wait for transition to complete before removing from DOM
+      }, 5000); // 5000 milliseconds = 5 seconds
+    });
+  });
+
+  // 2. Frontend Form Validation
+  function validateForm(event) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const errorText = document.getElementById('password-error');
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      errorText.classList.remove('hidden');
+      document.getElementById('confirmPassword').classList.add('border-red-500');
+
+      // Prevent form submission
+      event.preventDefault();
+      return false;
+    }
+
+    // Valid -> hide error
+    errorText.classList.add('hidden');
+    document.getElementById('confirmPassword').classList.remove('border-red-500');
+    return true;
+  }
+</script>
+
+</body></html>
