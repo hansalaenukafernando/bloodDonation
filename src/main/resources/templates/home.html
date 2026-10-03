@@ -94,12 +94,29 @@
 <main class="w-full pt-36 sm:pt-28 md:pt-24 bg-background">
     <div class="flex flex-col w-full">
         <!-- HERO SECTION -->
-        <section class="relative w-full overflow-hidden bg-primary text-on-primary">
-            <!-- Atmospheric Ambient Glows -->
-            <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary opacity-30 blur-3xl pointer-events-none"></div>
-            <div class="absolute top-1/2 -right-24 w-80 h-80 rounded-full bg-primary-container opacity-50 blur-3xl pointer-events-none"></div>
+        <section class="relative w-full overflow-hidden text-on-primary">
+
+            <!-- Slideshow background -->
+            <div id="hero-slides" class="absolute inset-0 z-0 bg-inverse-surface">
+                <div class="hero-slide absolute inset-0 bg-cover bg-center opacity-100 transition-opacity duration-1000"
+                     th:style="|background-image:url('@{/images/hero1.jpg}')|"></div>
+                <div class="hero-slide absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000"
+                     th:style="|background-image:url('@{/images/hero2.jpg}')|"></div>
+                <div class="hero-slide absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000"
+                     th:style="|background-image:url('@{/images/hero3.jpg}')|"></div>
+                <div class="hero-slide absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000"
+                     th:style="|background-image:url('@{/images/hero4.jpg}')|"></div>
+
+                <!-- Dark overlay for text readability (no red) -->
+                <div class="absolute inset-0 bg-black/55"></div>
+            </div>
+
+            <!-- Slide indicator dots -->
+            <div id="hero-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2"></div>
+
             <div class="max-w-7xl mx-auto px-gutter py-12 lg:py-space-2xl relative z-10">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-space-xl items-center">
+
                     <!-- Left: Hero Copy & Calls to Action -->
                     <div class="lg:col-span-7 flex flex-col gap-6 lg:gap-space-md text-center lg:text-left">
                         <div class="inline-flex items-center justify-center lg:justify-start gap-2 px-3 py-1.5 rounded-full bg-surface-container-lowest/10 backdrop-blur-md border-0 w-fit mx-auto lg:mx-0">
@@ -108,13 +125,16 @@
                             <span class="text-surface-container-high/40 hidden sm:inline">|</span>
                             <span class="font-label-sm text-[10px] sm:text-label-sm text-tertiary-fixed font-semibold hidden sm:inline">100% Voluntary Unpaid Donors</span>
                         </div>
+
                         <h1 class="font-display-hero-mobile lg:font-display-hero text-display-hero-mobile lg:text-display-hero tracking-tight leading-tight text-surface-container-lowest font-extrabold">
                             Give the Gift of Life — <br class="hidden sm:inline"/>
-                            <span class="text-secondary-fixed">Every Drop Counts</span>
+                            <span class="text-white/90">Every Drop Counts</span>
                         </h1>
+
                         <p class="font-body-md lg:font-body-lg text-body-md lg:text-body-lg text-surface-container-high max-w-2xl leading-relaxed mx-auto lg:mx-0">
                             Welcome to the National Blood Transfusion Service (NBTS). As Sri Lanka’s apex health authority across 108 island-wide blood banks, we secure an uninterrupted, safe, and quality-assured blood component supply for over 22 million citizens.
                         </p>
+
                         <!-- Action Cluster -->
                         <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center lg:justify-start gap-3 pt-2 w-full">
                             <a class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-secondary hover:bg-secondary-container text-on-secondary hover:text-on-secondary-container font-label-lg text-label-lg font-bold shadow-lg shadow-secondary/30 transition-all flex items-center justify-center gap-2" data-path="blood-donation-booking" th:href="@{/role}">
@@ -130,14 +150,15 @@
                                 <span>PRAANA (SLSCDR)</span>
                             </a>
                         </div>
+
                         <!-- Fast Institutional Credentials -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 mt-4 bg-primary-container/40 rounded-xl p-4 text-center lg:text-left">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 mt-4 bg-black/30 backdrop-blur-sm rounded-xl p-4 text-center lg:text-left">
                             <div class="flex flex-col">
                                 <span class="font-headline-md text-headline-md font-bold text-surface-container-lowest leading-none" th:text="${activeLocationCount}">108</span>
                                 <span class="font-label-sm text-label-sm text-surface-container-high mt-1 uppercase tracking-wider">Islandwide Centers</span>
                             </div>
                             <div class="flex flex-col">
-                                <span class="font-headline-md text-headline-md font-bold text-secondary-fixed leading-none" th:text="${registeredDonorCount}">0</span>
+                                <span class="font-headline-md text-headline-md font-bold text-white leading-none" th:text="${registeredDonorCount}">0</span>
                                 <span class="font-label-sm text-label-sm text-surface-container-high mt-1 uppercase tracking-wider">Registered Donors</span>
                             </div>
                             <div class="flex flex-col">
@@ -146,6 +167,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Right: Real-time Live Inventory Status Gauge Card -->
                     <div class="lg:col-span-5 w-full">
                         <div class="bg-surface-container-lowest text-on-surface rounded-2xl p-5 sm:p-space-lg shadow-2xl relative overflow-hidden">
@@ -159,14 +181,15 @@
                             <p class="font-body-sm text-body-sm text-on-surface-variant my-3">
                                 Consolidated available-unit counts across all registered blood banks.
                             </p>
+
                             <!-- Blood Matrix Badges (live, from database) -->
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-4">
                                 <div th:each="item : ${bloodStock}"
                                      class="p-3 sm:p-2.5 rounded-xl flex flex-col items-center text-center"
                                      th:classappend="${item.needsAttention} ? 'bg-error-container text-on-error-container' : 'bg-surface-container'">
-                                    <span class="font-headline-sm text-headline-sm font-black"
-                                          th:classappend="${item.needsAttention} ? 'text-secondary' : 'text-primary'"
-                                          th:text="${item.bloodGroup}">O-</span>
+                            <span class="font-headline-sm text-headline-sm font-black"
+                                  th:classappend="${item.needsAttention} ? 'text-secondary' : 'text-primary'"
+                                  th:text="${item.bloodGroup}">O-</span>
                                     <span class="font-label-sm text-[10px] sm:text-label-sm uppercase font-bold mt-1 tracking-wider"
                                           th:classappend="${item.needsAttention} ? 'text-secondary' : 'text-on-surface-variant'"
                                           th:text="${item.statusLabel}">Critical</span>
@@ -174,16 +197,18 @@
                                           th:classappend="${item.needsAttention} ? 'bg-secondary' : 'bg-tertiary-container'"></span>
                                 </div>
                             </div>
+
                             <!-- Apheresis Platelets Urgent Callout Box -->
                             <div class="p-3.5 rounded-xl bg-secondary-fixed/50 flex flex-col sm:flex-row items-start gap-3 mt-4">
                                 <span class="material-symbols-outlined text-secondary text-2xl shrink-0 mt-0.5 hidden sm:block">vaccines</span>
                                 <div class="flex flex-col">
                                     <span class="font-label-md text-label-md font-bold text-on-secondary-fixed flex items-center gap-2"><span class="material-symbols-outlined text-secondary text-lg sm:hidden">vaccines</span> Apheresis Platelets Alert</span>
                                     <span class="font-body-sm text-body-sm text-on-secondary-fixed-variant leading-snug mt-1">
-                                        Critical requirement for Dengue Hemorrhagic patients &amp; oncology wards at Apeksha Hospital Maharagama.
-                                    </span>
+                                Critical requirement for Dengue Hemorrhagic patients &amp; oncology wards at Apeksha Hospital Maharagama.
+                            </span>
                                 </div>
                             </div>
+
                             <!-- Action footer inside card -->
                             <div class="mt-4 pt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-surface-container/50">
                                 <a class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-secondary hover:text-primary transition-colors flex items-center gap-1" href="#">
@@ -194,6 +219,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -734,6 +760,36 @@
                 }
             });
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const slides = document.querySelectorAll('.hero-slide');
+        const dotsBox = document.getElementById('hero-dots');
+        let current = 0;
+        let timer;
+
+        // build dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = 'w-2.5 h-2.5 rounded-full bg-white/40 transition-all';
+            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            dot.addEventListener('click', () => { show(i); restart(); });
+            dotsBox.appendChild(dot);
+        });
+        const dots = dotsBox.children;
+
+        function show(n) {
+            slides[current].classList.replace('opacity-100', 'opacity-0');
+            dots[current].classList.replace('bg-white', 'bg-white/40');
+            current = n;
+            slides[current].classList.replace('opacity-0', 'opacity-100');
+            dots[current].classList.replace('bg-white/40', 'bg-white');
+        }
+        function next() { show((current + 1) % slides.length); }
+        function restart() { clearInterval(timer); timer = setInterval(next, 5000); }
+
+        dots[0].classList.replace('bg-white/40', 'bg-white');
+        timer = setInterval(next, 5000);
     });
 </script>
 
